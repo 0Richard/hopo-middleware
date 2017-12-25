@@ -7,7 +7,7 @@ phases:
       - npm install -g newman
   post_build:
     commands:
-      - serverless deploy --region eu-west-1 --verbose
+      - serverless deploy --region eu-west-2 --verbose
       - newman run postman/hopo-dwelling.postman_collection.json -r json --reporter-json-export ./report.json
 
 artifacts:
