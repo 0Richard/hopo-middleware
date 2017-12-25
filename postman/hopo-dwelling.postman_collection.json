@@ -1,0 +1,112 @@
+{
+	"info": {
+		"name": "hopo-dwelling",
+		"_postman_id": "18ec4319-c5d5-edb7-bfad-04f5dc54bbab",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"dwelling is created with correct values\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.identityId).to.eql(pm.globals.get(\"identityId\"));",
+							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"dwellingName\"));",
+							"  pm.expect(jsonData.deletedFlag).to.eql(0);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"  \r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    pm.globals.set('authorization', idToken);\r",
+							"    pm.globals.set('identityId', username);\r",
+							"    pm.globals.set('dwellingName', 'name-' + String(new Date().getTime()));\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+				},
+				"url": {
+					"raw": "https://api.hopo.io/dwelling",
+					"protocol": "https",
+					"host": [
+						"api",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

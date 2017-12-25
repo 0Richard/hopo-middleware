@@ -1,0 +1,328 @@
+# parameters need to be changed:
+# 1. provider.region
+# 2. provider.profile
+# 3. provider.environment.REGION
+# 4. provider.environment.IMAGE_BUCKET
+# 5. functions.*.events.http.authorizer.arn
+
+service: green-dwelling
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  memorySize: 512
+  timeout: 60
+  stage: A
+  region: eu-west-1
+  environment:
+    REGION: eu-west-1
+    COGNITO_USER_POOL_ID: eu-west-2_Rzcn6lEzg
+    COGNITO_CLIENT_ID: 5bd9nrprrfidb8cfph4am71uuk
+    DDB_TABLE_DWELLING: greenDwelling
+    DDB_TABLE_ROOM: greenRoom
+    DDB_TABLE_ITEM: greenItem
+    IMAGE_BUCKET: a-hopo
+    RAW_IMAGE_PREFIX: image
+    THUMBNAIL_PREFIX: thumbnail
+    OLD_IMAGE_PREFIX: oldImage
+    TMB_WIDTH: 150
+    TMB_HEIGHT: 150
+    TMB_QUALITY: 50
+    CS_REGION: eu-west-1
+    CS_SEARCH_ENDPOINT: search-hopo-btm277mpbhqjosnhqimkq5ocfi.eu-west-1.cloudsearch.amazonaws.com
+    CS_DOC_ENDPOINT: doc-hopo-btm277mpbhqjosnhqimkq5ocfi.eu-west-1.cloudsearch.amazonaws.com
+    CS_SEARCH_SIZE: 10
+
+functions:
+  search-stream:
+    name: ${self:provider.stage}-greenSearchStream
+    handler: functions/search/stream.index
+    role: defaultRole
+  search:
+    name: ${self:provider.stage}-greenSearch
+    handler: functions/search/search.index
+    role: defaultRole
+    events:
+      - http:
+          path: search
+          method: get
+          cors: true
+          authorizer: null
+  search-suggest:
+    name: ${self:provider.stage}-greenSearchSuggest
+    handler: functions/search/suggest.index
+    role: defaultRole
+    events:
+      - http:
+          path: search/suggest
+          method: get
+          cors: true
+          authorizer: null
+  user-login:
+    name: ${self:provider.stage}-greenUserLogin
+    handler: functions/user/login/login.index
+    role: defaultRole
+    events:
+      - http:
+          path: user/login
+          method: post
+          cors: true
+          authorizer: null
+  dwelling-create:
+    name: ${self:provider.stage}-greenDwellingCreate
+    handler: functions/dwelling/create/create.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwelling
+          method: post
+          cors: true
+          authorizer: null
+  dwelling-batch-create:
+    name: ${self:provider.stage}-greenDwellingBatchCreate
+    handler: functions/dwelling/create/batch-create.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwellingBatch
+          method: post
+          cors: true
+          authorizer: null
+  dwelling-update:
+    name: ${self:provider.stage}-greenDwellingUpdate
+    handler: functions/dwelling/update/update.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwelling/{dwelling_id}
+          method: put
+          cors: true
+          authorizer: null
+  dwelling-delete:
+    name: ${self:provider.stage}-greenDwellingDelete
+    handler: functions/dwelling/delete/delete.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwelling/{dwelling_id}
+          method: delete
+          cors: true
+          authorizer: null
+  dwelling-get:
+    name: ${self:provider.stage}-greenDwellingGet
+    handler: functions/dwelling/get/get.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwelling/{dwelling_id}
+          method: get
+          cors: true
+          authorizer: null
+  dwelling-get-self:
+    name: ${self:provider.stage}-greenDwellingGetSelf
+    handler: functions/dwelling/get/get-self.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwellingSelf
+          method: get
+          cors: true
+          authorizer: null
+  dwelling-list:
+    name: ${self:provider.stage}-greenDwellingList
+    handler: functions/dwelling/list/list.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwelling
+          method: get
+          cors: true
+          authorizer: null
+  dwelling-get-create: # for test case usage
+    name: ${self:provider.stage}-greenDwellingGetCreate
+    handler: functions/test/get-or-create.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwelling/getOrCreate
+          method: post
+          cors: true
+          authorizer: null
+  dwelling-clear-user-data: # for test case usage
+    name: ${self:provider.stage}-greenDwellingClearUserData
+    handler: functions/test/clear-user-data.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwelling/clearUserData
+          method: post
+          cors: true
+          authorizer: null
+  dwelling-create-test-data: # for test case usage
+    name: ${self:provider.stage}-greenDwellingCreateTestData
+    handler: functions/test/create-test-data.index
+    role: defaultRole
+    events:
+      - http:
+          path: dwelling/createTestData
+          method: post
+          cors: true
+          authorizer: null
+  room-create:
+    name: ${self:provider.stage}-greenRoomCreate
+    handler: functions/room/create/create.index
+    role: defaultRole
+    events:
+      - http:
+          path: room
+          method: post
+          cors: true
+          authorizer: null
+  room-batch-create:
+    name: ${self:provider.stage}-greenRoomBatchCreate
+    handler: functions/room/create/batch-create.index
+    role: defaultRole
+    events:
+      - http:
+          path: roomBatch
+          method: post
+          cors: true
+          authorizer: null
+  room-update:
+    name: ${self:provider.stage}-greenRoomUpdate
+    handler: functions/room/update/update.index
+    role: defaultRole
+    events:
+      - http:
+          path: room/{room_id}
+          method: put
+          cors: true
+          authorizer: null
+  room-delete:
+    name: ${self:provider.stage}-greenRoomDelete
+    handler: functions/room/delete/delete.index
+    role: defaultRole
+    events:
+      - http:
+          path: room/{room_id}
+          method: delete
+          cors: true
+          authorizer: null
+  room-get:
+    name: ${self:provider.stage}-greenRoomGet
+    handler: functions/room/get/get.index
+    role: defaultRole
+    events:
+      - http:
+          path: room/{room_id}
+          method: get
+          cors: true
+          authorizer: null
+  room-list:
+    name: ${self:provider.stage}-greenRoomList
+    handler: functions/room/list/list.index
+    role: defaultRole
+    events:
+      - http:
+          path: room
+          method: get
+          cors: true
+          authorizer: null
+  thumbnail:
+    name: ${self:provider.stage}-greenRoomThumbnail
+    handler: functions/room/thumbnail/thumbnail.index
+    role: defaultRole
+  item-create:
+    name: ${self:provider.stage}-greenItemCreate
+    handler: functions/item/create/create.index
+    role: defaultRole
+    events:
+      - http:
+          path: item
+          method: post
+          cors: true
+          authorizer: null
+  item-batch-create:
+    name: ${self:provider.stage}-greenItemBatchCreate
+    handler: functions/item/create/batch-create.index
+    role: defaultRole
+    events:
+      - http:
+          path: itemBatch
+          method: post
+          cors: true
+          authorizer: null
+  item-update:
+    name: ${self:provider.stage}-greenItemUpdate
+    handler: functions/item/update/update.index
+    role: defaultRole
+    events:
+      - http:
+          path: item/{item_id}
+          method: put
+          cors: true
+          authorizer: null
+  item-delete:
+    name: ${self:provider.stage}-greenItemDelete
+    handler: functions/item/delete/delete.index
+    role: defaultRole
+    events:
+      - http:
+          path: item/{item_id}
+          method: delete
+          cors: true
+          authorizer: null
+  item-get:
+    name: ${self:provider.stage}-greenItemGet
+    handler: functions/item/get/get.index
+    role: defaultRole
+    events:
+      - http:
+          path: item/{item_id}
+          method: get
+          cors: true
+          authorizer: null
+  item-list:
+    name: ${self:provider.stage}-greenItemList
+    handler: functions/item/list/list.index
+    role: defaultRole
+    events:
+      - http:
+          path: item
+          method: get
+          cors: true
+          authorizer: null
+
+resources:
+  Resources:
+    defaultRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: '/'
+        RoleName: ${self:provider.stage}-DwellingAPILambdaDefaultRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: ${self:provider.stage}-DwellingLambdaDefaultPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: '*'
+                -  Effect: 'Allow'
+                   Action:
+                    - 'cloudsearch:*'
+                    - 'cognito-idp:*'
+                    - 'dynamodb:*'
+                    - 's3:*'
+                   Resource: '*'
