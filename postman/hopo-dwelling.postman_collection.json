@@ -39,7 +39,7 @@
 							"const password = 'AAAaaa$$$000';\r",
 							"\r",
 							"const loginRequest = {\r",
-							"  url: 'https://api.hopo.io/user/login',\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
 							"  method: 'POST',\r",
 							"  header: 'content-type:application/json',\r",
 							"  body: {\r",
@@ -63,7 +63,7 @@
 							"\r",
 							"function getClearUserDataPayload (idToken) {\r",
 							"  return {\r",
-							"    url: 'https://api.hopo.io/dwelling/clearUserData',\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
 							"    method: 'POST',\r",
 							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
 							"    body: {\r",
@@ -93,15 +93,2362 @@
 					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
 				},
 				"url": {
-					"raw": "https://api.hopo.io/dwelling",
+					"raw": "https://api-blue.hopo.io/dwelling",
 					"protocol": "https",
 					"host": [
-						"api",
+						"api-blue",
 						"hopo",
 						"io"
 					],
 					"path": [
 						"dwelling"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create-fail-auth-error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"  pm.response.to.have.status(401);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set('authorization', 'invalid_token');\r",
+							"pm.globals.set('dwellingName', 'name-' + String(new Date().getTime()));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create-fail-missing-field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 422\", function () {\r",
+							"  pm.response.to.have.status(422);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"error message is returned\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.code).to.include(422);\r",
+							"  pm.expect(jsonData.message).to.not.eql(null);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");",
+							"pm.globals.unset(\"identityId\");",
+							"",
+							"const username = 'steven';",
+							"const password = 'AAAaaa$$$000';",
+							"",
+							"const loginRequest = {",
+							"  url: 'https://api-blue.hopo.io/user/login',",
+							"  method: 'POST',",
+							"  header: 'content-type:application/json',",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify({",
+							"      username: username,",
+							"      password: password",
+							"    })",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(loginRequest, function (err, res) {",
+							"  pm.globals.set('authorization', res.json().idToken);",
+							"  pm.globals.set('identityId', username);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create-fail-dwelling-exist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 422\", function () {\r",
+							"  pm.response.to.have.status(422);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"error message is returned\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.code).to.include(422);\r",
+							"  pm.expect(jsonData.message).to.not.eql(null);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"  \r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    pm.sendRequest(getCreatePayload(idToken), function (err2, res2) {\r",
+							"      pm.globals.set('authorization', idToken);\r",
+							"      pm.globals.set('identityId', username);\r",
+							"      pm.globals.set('dwellingName', 'name-' + String(new Date().getTime()));\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreatePayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: 'name-' + String(new Date().getTime()),\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"dwelling is retrieved with correct values\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.dwellingId).to.eql(pm.globals.get(\"dwellingId\"));\r",
+							"  pm.expect(jsonData.identityId).to.eql(pm.globals.get(\"identityId\"));\r",
+							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"dwellingName\"));\r",
+							"  pm.expect(jsonData.addressLine1).to.eql(pm.globals.get(\"addressLine1\"));\r",
+							"  pm.expect(jsonData.addressLine2).to.eql(pm.globals.get(\"addressLine2\"));\r",
+							"  pm.expect(jsonData.city).to.eql(pm.globals.get(\"city\"));\r",
+							"  pm.expect(jsonData.postCode).to.eql(pm.globals.get(\"postCode\"));\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"const addressLine1 = 'AD1';\r",
+							"const addressLine2 = 'AD2';\r",
+							"const city = 'Singapore';\r",
+							"const postCode = '123456';\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    const createRequest = {\r",
+							"      url: 'https://api-blue.hopo.io/dwelling',\r",
+							"      method: 'POST',\r",
+							"      header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"      body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"          dwellingName: dwellingName,\r",
+							"          dwellingType: 'type',\r",
+							"          dwellingRooms: 1,\r",
+							"          addressLine1: addressLine1,\r",
+							"          addressLine2: addressLine2,\r",
+							"          city: city,\r",
+							"          postCode: postCode\r",
+							"        })\r",
+							"      }\r",
+							"    };\r",
+							"\r",
+							"    pm.sendRequest(createRequest, function (err2, res2) {\r",
+							"      pm.globals.set('authorization', idToken);\r",
+							"      pm.globals.set('identityId', username);\r",
+							"      pm.globals.set('dwellingId', res2.json().dwellingId);\r",
+							"      pm.globals.set('dwellingName', dwellingName);\r",
+							"      pm.globals.set('addressLine1', addressLine1);\r",
+							"      pm.globals.set('addressLine2', addressLine2);\r",
+							"      pm.globals.set('city', city);\r",
+							"      pm.globals.set('postCode', postCode);\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"{{dwellingId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-room-count-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"dwelling is retrieved with correct values\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.dwellingId).to.eql(pm.globals.get(\"dwellingId\"));\r",
+							"  pm.expect(jsonData.identityId).to.eql(pm.globals.get(\"identityId\"));\r",
+							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"dwellingName\"));\r",
+							"  pm.expect(jsonData.roomCount).to.eql(2);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    pm.sendRequest(getCreateDwellingPayload(idToken), function (err2, res2) {\r",
+							"      var dwellingId = res2.json().dwellingId;\r",
+							"\r",
+							"      pm.sendRequest(getCreateRoomsPayload(idToken, dwellingId), function (err3, res3) {\r",
+							"        pm.globals.set('authorization', idToken);\r",
+							"        pm.globals.set('identityId', username);\r",
+							"        pm.globals.set('dwellingId', dwellingId);\r",
+							"        pm.globals.set('dwellingName', dwellingName);\r",
+							"      });\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreateDwellingPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: dwellingName,\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreateRoomsPayload (idToken, dwellingId) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/roomBatch',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingId: dwellingId,\r",
+							"        rooms: [{\r",
+							"          roomName: 'name1-' + String(new Date().getTime()),\r",
+							"          roomType: 'type1'\r",
+							"        }, {\r",
+							"          roomName: 'name2-' + String(new Date().getTime()),\r",
+							"          roomType: 'type2'\r",
+							"        }]\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"{{dwellingId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-fail-auth-error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"  pm.response.to.have.status(401);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set('authorization', 'invalid_token');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/some_dwelling_id",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"some_dwelling_id"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-fail-not-found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"  pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"error message is returned\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.code).to.include(404);",
+							"  pm.expect(jsonData.message).to.not.eql(null);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");",
+							"pm.globals.unset(\"identityId\");",
+							"",
+							"const username = 'steven';",
+							"const password = 'AAAaaa$$$000';",
+							"",
+							"const loginRequest = {",
+							"  url: 'https://api-blue.hopo.io/user/login',",
+							"  method: 'POST',",
+							"  header: 'content-type:application/json',",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify({",
+							"      username: username,",
+							"      password: password",
+							"    })",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(loginRequest, function (err, res) {",
+							"  pm.globals.set('authorization', res.json().idToken);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/invalid_dwelling_id",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"invalid_dwelling_id"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-fail-wrong-user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"  pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"error message is returned\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.code).to.include(404);",
+							"  pm.expect(jsonData.message).to.not.eql(null);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// create dwelling using user1 and get dwelling using user2\r",
+							"\r",
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username1 = 'steven';\r",
+							"const password1 = 'AAAaaa$$$000';\r",
+							"const username2 = 'lujin';\r",
+							"const password2 = 'AAAaaa$$$000';\r",
+							"\r",
+							"var loginRequest1 = getLoginPayload(username1, password1)\r",
+							"\r",
+							"pm.sendRequest(loginRequest1, function (err, res) {\r",
+							"  var idToken1 = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken1), function (err1, res1) {\r",
+							"    var createRequest1 = getCreatePayload(username1, idToken1);\r",
+							"\r",
+							"    pm.sendRequest(createRequest1, function (err2, res2) {\r",
+							"      var loginRequest2 = getLoginPayload(username2, password2)\r",
+							"\r",
+							"      pm.sendRequest(loginRequest2, function (err3, res3) {\r",
+							"        var idToken2 = res3.json().idToken;\r",
+							"\r",
+							"        pm.globals.set('authorization', idToken2);\r",
+							"        pm.globals.set('dwellingId', res2.json().dwellingId);\r",
+							"      });\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getLoginPayload (username, password) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/user/login',\r",
+							"    method: 'POST',\r",
+							"    header: 'content-type:application/json',\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        username: username,\r",
+							"        password: password\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreatePayload (username, idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: username + '-' + String(new Date().getTime()),\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"{{dwellingId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "list-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"dwellings are retrieved\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData).to.be.an('array');",
+							"",
+							"  if (jsonData.length > 1) {",
+							"    pm.expect(jsonData[0]).to.have.property('dwellingId');",
+							"  }",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");",
+							"pm.globals.unset(\"identityId\");",
+							"",
+							"const username = 'steven';",
+							"const password = 'AAAaaa$$$000';",
+							"",
+							"const loginRequest = {",
+							"  url: 'https://api-blue.hopo.io/user/login',",
+							"  method: 'POST',",
+							"  header: 'content-type:application/json',",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify({",
+							"      username: username,",
+							"      password: password",
+							"    })",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(loginRequest, function (err, res) {",
+							"  pm.globals.set('authorization', res.json().idToken);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "list-fail-auth-error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"  pm.response.to.have.status(401);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set('authorization', 'invalid_token');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-self-exists-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"dwelling is retrieved with correct values\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.dwellingId).to.eql(pm.globals.get(\"dwellingId\"));\r",
+							"  pm.expect(jsonData.identityId).to.eql(pm.globals.get(\"identityId\"));\r",
+							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"dwellingName\"));\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    const createRequest = {\r",
+							"      url: 'https://api-blue.hopo.io/dwelling',\r",
+							"      method: 'POST',\r",
+							"      header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"      body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"          dwellingName: dwellingName,\r",
+							"          dwellingType: 'type',\r",
+							"          dwellingRooms: 1\r",
+							"        })\r",
+							"      }\r",
+							"    };\r",
+							"\r",
+							"    pm.sendRequest(createRequest, function (err2, res2) {\r",
+							"      pm.globals.set('authorization', idToken);\r",
+							"      pm.globals.set('identityId', username);\r",
+							"      pm.globals.set('dwellingId', res2.json().dwellingId);\r",
+							"      pm.globals.set('dwellingName', dwellingName);\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwellingSelf",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwellingSelf"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-self-room-count-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"dwelling is retrieved with correct values\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.dwellingId).to.eql(pm.globals.get(\"dwellingId\"));\r",
+							"  pm.expect(jsonData.identityId).to.eql(pm.globals.get(\"identityId\"));\r",
+							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"dwellingName\"));\r",
+							"  pm.expect(jsonData.roomCount).to.eql(2);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    pm.sendRequest(getCreateDwellingPayload(idToken), function (err2, res2) {\r",
+							"      var dwellingId = res2.json().dwellingId;\r",
+							"\r",
+							"      pm.sendRequest(getCreateRoomsPayload(idToken, dwellingId), function (err3, res3) {\r",
+							"        pm.globals.set('authorization', idToken);\r",
+							"        pm.globals.set('identityId', username);\r",
+							"        pm.globals.set('dwellingId', dwellingId);\r",
+							"        pm.globals.set('dwellingName', dwellingName);\r",
+							"      });\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreateDwellingPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: dwellingName,\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreateRoomsPayload (idToken, dwellingId) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/roomBatch',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingId: dwellingId,\r",
+							"        rooms: [{\r",
+							"          roomName: 'name1-' + String(new Date().getTime()),\r",
+							"          roomType: 'type1'\r",
+							"        }, {\r",
+							"          roomName: 'name2-' + String(new Date().getTime()),\r",
+							"          roomType: 'type2'\r",
+							"        }]\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwellingSelf",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwellingSelf"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-self-non-exists-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"empty object is returned\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(Object.keys(jsonData).length).to.eql(0);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    pm.globals.set('authorization', idToken);\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwellingSelf",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwellingSelf"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get-self-deleted-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"empty object is returned\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(Object.keys(jsonData).length).to.eql(0);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    pm.sendRequest(getCreatePayload(idToken), function (err2, res2) {\r",
+							"      var dwellingId = res2.json().dwellingId;\r",
+							"\r",
+							"      pm.sendRequest(getDeletePayload(dwellingId, idToken), function (err3, res3) {\r",
+							"        pm.globals.set('authorization', idToken);\r",
+							"        pm.globals.set('identityId', username);\r",
+							"        pm.globals.set('dwellingId', dwellingId);\r",
+							"        pm.globals.set('dwellingName', dwellingName);\r",
+							"      });\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreatePayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: dwellingName,\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  }\r",
+							"}\r",
+							"\r",
+							"function getDeletePayload (dwellingId, idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/' + dwellingId,\r",
+							"    method: 'DELETE',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingId\": \"a\",\n  \"roomName\": \"roomA\",\n  \"roomType\": \"typeA\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwellingSelf",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwellingSelf"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"dwelling is updated with correct values\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"newDwellingName\"));\r",
+							"  pm.expect(jsonData.dwellingType).to.eql(pm.globals.get(\"newDwellingType\"));\r",
+							"  pm.expect(jsonData.dwellingRooms).to.eql(pm.globals.get(\"newDwellingRooms\"));\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  const getOrCreateRequest = {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/getOrCreate',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: dwellingName,\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"\r",
+							"  pm.sendRequest(getOrCreateRequest, function (err1, res1) {\r",
+							"    pm.globals.set('authorization', idToken);\r",
+							"    pm.globals.set('dwellingId', res1.json().dwellingId);\r",
+							"    pm.globals.set('newDwellingName', dwellingName + '-new');\r",
+							"    pm.globals.set('newDwellingType', 'type-new');\r",
+							"    pm.globals.set('newDwellingRooms', res1.json().dwellingRooms + 1);\r",
+							"  });\r",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingName\": \"{{newDwellingName}}\",\n  \"dwellingType\": \"{{newDwellingType}}\",\n  \"dwellingRooms\": {{newDwellingRooms}}\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"{{dwellingId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update-fail-auth-error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"  pm.response.to.have.status(401);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set('authorization', 'invalid_token');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\",\n  \"dwellingRooms\": 1\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/some_dwelling_id",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"some_dwelling_id"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update-fail-missing-field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 422\", function () {\r",
+							"  pm.response.to.have.status(422);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"error message is returned\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.code).to.include(422);\r",
+							"  pm.expect(jsonData.message).to.not.eql(null);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  const createRequest = {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: dwellingName,\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"\r",
+							"  pm.sendRequest(createRequest, function (err1, res1) {\r",
+							"    pm.globals.set('authorization', idToken);\r",
+							"    pm.globals.set('dwellingId', res1.json().dwellingId);\r",
+							"  });\r",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"someOtherAttribute\": \"someOtherValue\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"{{dwellingId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update-fail-not-found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"  pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"error message is returned\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.code).to.include(404);",
+							"  pm.expect(jsonData.message).to.not.eql(null);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");",
+							"pm.globals.unset(\"identityId\");",
+							"",
+							"const username = 'steven';",
+							"const password = 'AAAaaa$$$000';",
+							"",
+							"const loginRequest = {",
+							"  url: 'https://api-blue.hopo.io/user/login',",
+							"  method: 'POST',",
+							"  header: 'content-type:application/json',",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify({",
+							"      username: username,",
+							"      password: password",
+							"    })",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(loginRequest, function (err, res) {",
+							"  pm.globals.set('authorization', res.json().idToken);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\",\n  \"dwellingRooms\": 1\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/invalid_dwelling_id",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"invalid_dwelling_id"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update-fail-wrong-user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"  pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"error message is returned\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.code).to.include(404);",
+							"  pm.expect(jsonData.message).to.not.eql(null);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// create dwelling using user1 and update dwelling using user2\r",
+							"\r",
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username1 = 'steven';\r",
+							"const password1 = 'AAAaaa$$$000';\r",
+							"const username2 = 'lujin';\r",
+							"const password2 = 'AAAaaa$$$000';\r",
+							"\r",
+							"var loginRequest1 = getLoginPayload(username1, password1)\r",
+							"\r",
+							"pm.sendRequest(loginRequest1, function (err, res) {\r",
+							"  var idToken1 = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken1), function (err1, res1) {\r",
+							"    var createRequest1 = getCreatePayload(username1, idToken1);\r",
+							"\r",
+							"    pm.sendRequest(createRequest1, function (err2, res2) {\r",
+							"      var loginRequest2 = getLoginPayload(username2, password2)\r",
+							"\r",
+							"      pm.sendRequest(loginRequest2, function (err3, res3) {\r",
+							"        var idToken2 = res3.json().idToken;\r",
+							"\r",
+							"        pm.globals.set('authorization', idToken2);\r",
+							"        pm.globals.set('dwellingId', res2.json().dwellingId);\r",
+							"      });\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getLoginPayload (username, password) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/user/login',\r",
+							"    method: 'POST',\r",
+							"    header: 'content-type:application/json',\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        username: username,\r",
+							"        password: password\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreatePayload (username, idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: username + '-' + String(new Date().getTime()),\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\",\n  \"dwellingRooms\": 1\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"{{dwellingId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"dwelling is deleted\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.deletedFlag).to.eql(1);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    const createRequest = {\r",
+							"      url: 'https://api-blue.hopo.io/dwelling',\r",
+							"      method: 'POST',\r",
+							"      header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"      body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"          dwellingName: dwellingName,\r",
+							"          dwellingType: 'type',\r",
+							"          dwellingRooms: 1\r",
+							"        })\r",
+							"      }\r",
+							"    };\r",
+							"\r",
+							"    pm.sendRequest(createRequest, function (err2, res2) {\r",
+							"      pm.globals.set('authorization', idToken);\r",
+							"      pm.globals.set('dwellingId', res2.json().dwellingId);\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"{{dwellingId}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete-fail-auth-error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"  pm.response.to.have.status(401);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.set('authorization', 'invalid_token');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/some_dwelling_id",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"some_dwelling_id"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete-fail-not-found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"  pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"error message is returned\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.code).to.include(404);",
+							"  pm.expect(jsonData.message).to.not.eql(null);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");",
+							"pm.globals.unset(\"identityId\");",
+							"",
+							"const username = 'steven';",
+							"const password = 'AAAaaa$$$000';",
+							"",
+							"const loginRequest = {",
+							"  url: 'https://api-blue.hopo.io/user/login',",
+							"  method: 'POST',",
+							"  header: 'content-type:application/json',",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify({",
+							"      username: username,",
+							"      password: password",
+							"    })",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(loginRequest, function (err, res) {",
+							"  pm.globals.set('authorization', res.json().idToken);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/invalid_dwelling_id",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"invalid_dwelling_id"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete-fail-wrong-user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"  pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"error message is returned\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.code).to.include(404);",
+							"  pm.expect(jsonData.message).to.not.eql(null);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// create dwelling using user1 and delete dwelling using user2\r",
+							"\r",
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username1 = 'steven';\r",
+							"const password1 = 'AAAaaa$$$000';\r",
+							"const username2 = 'lujin';\r",
+							"const password2 = 'AAAaaa$$$000';\r",
+							"\r",
+							"var loginRequest1 = getLoginPayload(username1, password1)\r",
+							"\r",
+							"pm.sendRequest(loginRequest1, function (err, res) {\r",
+							"  var idToken1 = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken1), function (err1, res1) {\r",
+							"    var createRequest1 = getCreatePayload(username1, idToken1);\r",
+							"\r",
+							"    pm.sendRequest(createRequest1, function (err2, res2) {\r",
+							"      var loginRequest2 = getLoginPayload(username2, password2)\r",
+							"\r",
+							"      pm.sendRequest(loginRequest2, function (err2, res3) {\r",
+							"        var idToken2 = res3.json().idToken;\r",
+							"\r",
+							"        pm.globals.set('authorization', idToken2);\r",
+							"        pm.globals.set('dwellingId', res2.json().dwellingId);\r",
+							"      });\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getLoginPayload (username, password) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/user/login',\r",
+							"    method: 'POST',\r",
+							"    header: 'content-type:application/json',\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        username: username,\r",
+							"        password: password\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getCreatePayload (username, idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: username + '-' + String(new Date().getTime()),\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"}\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling",
+						"{{dwellingId}}"
 					]
 				},
 				"description": ""
