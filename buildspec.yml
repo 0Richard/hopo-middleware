@@ -9,5 +9,5 @@ phases:
     commands:
       - npm install
       - serverless deploy --region eu-west-2 --verbose
-      - newman run postman/hopo-dwelling.postman_collection.json -r json --reporter-json-export ./report.json
+      - newman run postman/hopohopo-all.postman_collection.json -r json --reporter-json-export ./report.json
       - aws s3 cp ./report.json s3://hopo-codebuild-artifacts/hopo-blue/report-`date +"%y%m%d%H%M"`.json
