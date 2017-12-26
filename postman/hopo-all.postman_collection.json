@@ -1,8 +1,7 @@
 {
 	"info": {
 		"name": "hopo-all",
-		"_postman_id": "39679421-7c99-ab12-5ffa-6cbb3d3bf840",
-		"description": "",
+		"_postman_id": "a980ee58-e853-8f03-b15d-d7bb2ae0c55a",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -104,7 +103,7 @@
 						"dwelling"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -161,7 +160,7 @@
 						"dwelling"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -245,7 +244,7 @@
 						"dwelling"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -364,7 +363,7 @@
 						"dwelling"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -501,7 +500,7 @@
 						"{{dwellingId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -650,7 +649,7 @@
 						"{{dwellingId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -707,7 +706,7 @@
 						"some_dwelling_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -791,7 +790,7 @@
 						"invalid_dwelling_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -926,7 +925,7 @@
 						"{{dwellingId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1012,7 +1011,7 @@
 						"dwelling"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1068,7 +1067,7 @@
 						"dwelling"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1188,7 +1187,7 @@
 						"dwellingSelf"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1336,7 +1335,7 @@
 						"dwellingSelf"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1434,7 +1433,7 @@
 						"dwellingSelf"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1570,7 +1569,7 @@
 						"dwellingSelf"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1678,7 +1677,7 @@
 						"{{dwellingId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1735,7 +1734,7 @@
 						"some_dwelling_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1787,8 +1786,8 @@
 							"pm.sendRequest(loginRequest, function (err, res) {\r",
 							"  var idToken = res.json().idToken;\r",
 							"\r",
-							"  const createRequest = {\r",
-							"    url: 'https://api-blue.hopo.io/dwelling',\r",
+							"  const getOrCreateRequest = {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/getOrCreate',\r",
 							"    method: 'POST',\r",
 							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
 							"    body: {\r",
@@ -1801,7 +1800,7 @@
 							"    }\r",
 							"  };\r",
 							"\r",
-							"  pm.sendRequest(createRequest, function (err1, res1) {\r",
+							"  pm.sendRequest(getOrCreateRequest, function (err1, res1) {\r",
 							"    pm.globals.set('authorization', idToken);\r",
 							"    pm.globals.set('dwellingId', res1.json().dwellingId);\r",
 							"  });\r",
@@ -1839,7 +1838,7 @@
 						"{{dwellingId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -1923,7 +1922,7 @@
 						"invalid_dwelling_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2058,7 +2057,7 @@
 						"{{dwellingId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2175,7 +2174,7 @@
 						"{{dwellingId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2232,7 +2231,7 @@
 						"some_dwelling_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2316,7 +2315,7 @@
 						"invalid_dwelling_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2451,7 +2450,7 @@
 						"{{dwellingId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2561,7 +2560,7 @@
 						"room"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2617,7 +2616,7 @@
 						"room"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2724,7 +2723,7 @@
 						"room"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2813,7 +2812,7 @@
 						"room"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -2932,7 +2931,7 @@
 						"room"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3034,7 +3033,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"dwellingId\": \"{{dwellingId}}\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\",\r\n    \"roomType\": \"type1\"\r\n  }, {\r\n\t\"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"dwellingId\": \"{{dwellingId}}\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\",\r\n    \"roomType\": \"type1\"\r\n  }, {\r\n  \"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/roomBatch",
@@ -3048,7 +3047,7 @@
 						"roomBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3090,7 +3089,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"dwellingId\": \"{{dwellingId}}\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\",\r\n    \"roomType\": \"type1\"\r\n  }, {\r\n\t\"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"dwellingId\": \"{{dwellingId}}\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\",\r\n    \"roomType\": \"type1\"\r\n  }, {\r\n  \"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/roomBatch",
@@ -3104,7 +3103,7 @@
 						"roomBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3197,7 +3196,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"dwellingId\": \"{{dwellingId}}\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\"\r\n  }, {\r\n\t\"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"dwellingId\": \"{{dwellingId}}\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\"\r\n  }, {\r\n  \"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/roomBatch",
@@ -3211,7 +3210,7 @@
 						"roomBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3286,7 +3285,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"dwellingId\": \"invalidDwellingId\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\",\r\n    \"roomType\": \"type1\"\r\n  }, {\r\n\t\"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"dwellingId\": \"invalidDwellingId\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\",\r\n    \"roomType\": \"type1\"\r\n  }, {\r\n  \"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/roomBatch",
@@ -3300,7 +3299,7 @@
 						"roomBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3405,7 +3404,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"dwellingId\": \"{{dwellingId}}\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\",\r\n    \"roomType\": \"type1\"\r\n  }, {\r\n\t\"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"dwellingId\": \"{{dwellingId}}\",\r\n  \"rooms\": [{\r\n    \"roomName\": \"{{roomName1}}\",\r\n    \"roomType\": \"type1\"\r\n  }, {\r\n  \"roomName\": \"{{roomName2}}\",\r\n    \"roomType\": \"type2\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/roomBatch",
@@ -3419,7 +3418,7 @@
 						"roomBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3553,7 +3552,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3713,7 +3712,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3770,7 +3769,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3851,7 +3850,7 @@
 						"invalid_room_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -3992,7 +3991,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4140,7 +4139,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4226,7 +4225,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4282,7 +4281,7 @@
 						"room"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4417,7 +4416,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4474,7 +4473,7 @@
 						"some_room_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4607,7 +4606,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4688,7 +4687,7 @@
 						"invalid_room_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4829,7 +4828,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -4955,7 +4954,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5012,7 +5011,7 @@
 						"some_room_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5093,7 +5092,7 @@
 						"invalid_room_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5231,7 +5230,7 @@
 						"{{roomId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5334,7 +5333,7 @@
 						"item"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5390,7 +5389,7 @@
 						"item"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5491,7 +5490,7 @@
 						"item"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5578,7 +5577,7 @@
 						"item"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5691,7 +5690,7 @@
 						"item"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5788,7 +5787,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"roomId\": \"{{roomId}}\",\r\n  \"items\": [{\r\n    \"description\": \"{{description1}}\"\r\n  }, {\r\n\t\"description\": \"{{description2}}\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"roomId\": \"{{roomId}}\",\r\n  \"items\": [{\r\n    \"description\": \"{{description1}}\"\r\n  }, {\r\n  \"description\": \"{{description2}}\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/itemBatch",
@@ -5802,7 +5801,7 @@
 						"itemBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5844,7 +5843,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"roomId\": \"{{roomId}}\",\r\n  \"items\": [{\r\n    \"description\": \"{{description1}}\"\r\n  }, {\r\n\t\"description\": \"{{description2}}\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"roomId\": \"{{roomId}}\",\r\n  \"items\": [{\r\n    \"description\": \"{{description1}}\"\r\n  }, {\r\n  \"description\": \"{{description2}}\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/itemBatch",
@@ -5858,7 +5857,7 @@
 						"itemBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -5946,7 +5945,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"roomId\": \"{{roomId}}\",\r\n  \"items\": [{\r\n    \"otherAttr\": \"value\"\r\n  }, {\r\n\t\"otherAttr\": \"value\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"roomId\": \"{{roomId}}\",\r\n  \"items\": [{\r\n    \"otherAttr\": \"value\"\r\n  }, {\r\n  \"otherAttr\": \"value\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/itemBatch",
@@ -5960,7 +5959,7 @@
 						"itemBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6034,7 +6033,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"roomId\": \"invalidRoomId\",\r\n  \"items\": [{\r\n    \"description\": \"{{description1}}\"\r\n  }, {\r\n\t\"description\": \"{{description2}}\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"roomId\": \"invalidRoomId\",\r\n  \"items\": [{\r\n    \"description\": \"{{description1}}\"\r\n  }, {\r\n  \"description\": \"{{description2}}\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/itemBatch",
@@ -6048,7 +6047,7 @@
 						"itemBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6148,7 +6147,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"roomId\": \"{{roomId}}\",\r\n  \"items\": [{\r\n    \"description\": \"{{description1}}\"\r\n  }, {\r\n\t\"description\": \"{{description2}}\"\r\n  }]\r\n}"
+					"raw": "{\r\n  \"roomId\": \"{{roomId}}\",\r\n  \"items\": [{\r\n    \"description\": \"{{description1}}\"\r\n  }, {\r\n  \"description\": \"{{description2}}\"\r\n  }]\r\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/itemBatch",
@@ -6162,7 +6161,7 @@
 						"itemBatch"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6287,7 +6286,7 @@
 						"{{itemId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6344,7 +6343,7 @@
 						"{{itemId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6425,7 +6424,7 @@
 						"invalid_item_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6555,7 +6554,7 @@
 						"{{itemId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6690,7 +6689,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6776,7 +6775,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6832,7 +6831,7 @@
 						"item"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -6957,7 +6956,7 @@
 						"{{itemId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7014,7 +7013,7 @@
 						"some_item_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7138,7 +7137,7 @@
 						"{{itemId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7219,7 +7218,7 @@
 						"invalid_item_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7350,7 +7349,7 @@
 						"{{itemId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7469,7 +7468,7 @@
 						"{{itemId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7526,7 +7525,7 @@
 						"some_item_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7607,7 +7606,7 @@
 						"invalid_item_id"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7738,7 +7737,7 @@
 						"{{itemId}}"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -7889,7 +7888,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -8041,7 +8040,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -8193,7 +8192,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -8345,7 +8344,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -8409,7 +8408,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -8567,7 +8566,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -8652,7 +8651,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -8815,7 +8814,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -8969,7 +8968,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -9034,7 +9033,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -9190,7 +9189,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -9278,7 +9277,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -9444,7 +9443,7 @@
 						}
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		}
