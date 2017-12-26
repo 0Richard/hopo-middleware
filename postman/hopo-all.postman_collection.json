@@ -7277,7 +7277,7 @@
 							"    var description = 'description-' + String(new Date().getTime());\r",
 							"\r",
 							"    const createItemRequest = {\r",
-							"      url: 'https://api-blue.hopo.io/room',\r",
+							"      url: 'https://api-blue.hopo.io/item',\r",
 							"      method: 'POST',\r",
 							"      header: ['content-type:application/json', 'authorization:' + idToken1],\r",
 							"      body: {\r",
