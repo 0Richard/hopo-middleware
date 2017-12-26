@@ -43,7 +43,7 @@ module.exports.index = (event, context, callback) => {
     .then(function (item) {
       // If item is not found, then return HTTP 404 [Not Found] to client
       // Otherwise proceed to update item
-      if (!item) {
+      if (!item || item.identityId !== cognitoUser) {
         callbacker.makeCallback(null, lib.getResponse404())
       } else {
         updateItem(itemId, itemData, cognitoUser)
