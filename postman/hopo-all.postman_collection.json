@@ -1,7 +1,8 @@
 {
 	"info": {
-		"name": "hopo-all",
-		"_postman_id": "a980ee58-e853-8f03-b15d-d7bb2ae0c55a",
+		"name": "hopo-blue",
+		"_postman_id": "7996ca84-4573-4426-159f-968e3643f7c6",
+		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -102,8 +103,125 @@
 					"path": [
 						"dwelling"
 					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dwelling-create-success-misc-room",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var idToken = pm.globals.get(\"authorization\");\r",
+							"var jsonData = pm.response.json();\r",
+							"var dwellingId = jsonData.dwellingId;\r",
+							"\r",
+							"pm.sendRequest(listRoomsPayload(idToken, dwellingId), function (err1, res1) {\r",
+							"  pm.test(\"dwelling is created with correct values\", function () {\r",
+							"    var rooms = res1.json();\r",
+							"\r",
+							"    pm.expect(jsonData.identityId).to.eql(pm.globals.get(\"identityId\"));\r",
+							"    pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"dwellingName\"));\r",
+							"    pm.expect(jsonData.deletedFlag).to.eql(0);\r",
+							"    pm.expect(rooms.length).to.eql(1);\r",
+							"    pm.expect(rooms[0].miscRoom).to.eql(1);\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function listRoomsPayload (idToken, dwellingId) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/room?dwellingId=' + dwellingId,\r",
+							"    method: 'GET',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken]\r",
+							"  };\r",
+							"}"
+						]
+					}
 				},
-				"description": null
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"  \r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  pm.sendRequest(getClearUserDataPayload(idToken), function (err1, res1) {\r",
+							"    pm.globals.set('authorization', idToken);\r",
+							"    pm.globals.set('identityId', username);\r",
+							"    pm.globals.set('dwellingName', 'name-' + String(new Date().getTime()));\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function getClearUserDataPayload (idToken) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/clearUserData',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: ''\r",
+							"    }\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/dwelling",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"dwelling"
+					]
+				}
 			},
 			"response": []
 		},
@@ -159,8 +277,7 @@
 					"path": [
 						"dwelling"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -243,8 +360,7 @@
 					"path": [
 						"dwelling"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -362,8 +478,7 @@
 					"path": [
 						"dwelling"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -499,8 +614,7 @@
 						"dwelling",
 						"{{dwellingId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -521,7 +635,7 @@
 							"  pm.expect(jsonData.dwellingId).to.eql(pm.globals.get(\"dwellingId\"));\r",
 							"  pm.expect(jsonData.identityId).to.eql(pm.globals.get(\"identityId\"));\r",
 							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"dwellingName\"));\r",
-							"  pm.expect(jsonData.roomCount).to.eql(2);\r",
+							"  pm.expect(jsonData.roomCount).to.eql(3);\r",
 							"});"
 						]
 					}
@@ -648,8 +762,7 @@
 						"dwelling",
 						"{{dwellingId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -705,8 +818,7 @@
 						"dwelling",
 						"some_dwelling_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -789,8 +901,7 @@
 						"dwelling",
 						"invalid_dwelling_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -924,8 +1035,7 @@
 						"dwelling",
 						"{{dwellingId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1010,8 +1120,7 @@
 					"path": [
 						"dwelling"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1066,8 +1175,7 @@
 					"path": [
 						"dwelling"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1186,8 +1294,7 @@
 					"path": [
 						"dwellingSelf"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1208,7 +1315,7 @@
 							"  pm.expect(jsonData.dwellingId).to.eql(pm.globals.get(\"dwellingId\"));\r",
 							"  pm.expect(jsonData.identityId).to.eql(pm.globals.get(\"identityId\"));\r",
 							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"dwellingName\"));\r",
-							"  pm.expect(jsonData.roomCount).to.eql(2);\r",
+							"  pm.expect(jsonData.roomCount).to.eql(3);\r",
 							"});"
 						]
 					}
@@ -1334,8 +1441,7 @@
 					"path": [
 						"dwellingSelf"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1432,8 +1538,7 @@
 					"path": [
 						"dwellingSelf"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1568,8 +1673,7 @@
 					"path": [
 						"dwellingSelf"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1676,8 +1780,7 @@
 						"dwelling",
 						"{{dwellingId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1733,8 +1836,7 @@
 						"dwelling",
 						"some_dwelling_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1837,8 +1939,7 @@
 						"dwelling",
 						"{{dwellingId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -1921,8 +2022,7 @@
 						"dwelling",
 						"invalid_dwelling_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2056,8 +2156,7 @@
 						"dwelling",
 						"{{dwellingId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2173,8 +2272,7 @@
 						"dwelling",
 						"{{dwellingId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2230,8 +2328,7 @@
 						"dwelling",
 						"some_dwelling_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2314,8 +2411,7 @@
 						"dwelling",
 						"invalid_dwelling_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2449,8 +2545,7 @@
 						"dwelling",
 						"{{dwellingId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2559,8 +2654,7 @@
 					"path": [
 						"room"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2615,8 +2709,7 @@
 					"path": [
 						"room"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2722,8 +2815,7 @@
 					"path": [
 						"room"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2811,8 +2903,7 @@
 					"path": [
 						"room"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -2930,8 +3021,7 @@
 					"path": [
 						"room"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3046,8 +3136,7 @@
 					"path": [
 						"roomBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3102,8 +3191,7 @@
 					"path": [
 						"roomBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3209,8 +3297,7 @@
 					"path": [
 						"roomBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3298,8 +3385,7 @@
 					"path": [
 						"roomBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3417,8 +3503,7 @@
 					"path": [
 						"roomBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3551,8 +3636,7 @@
 						"room",
 						"{{roomId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3711,8 +3795,7 @@
 						"room",
 						"{{roomId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3768,8 +3851,7 @@
 						"room",
 						"{{roomId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3849,8 +3931,7 @@
 						"room",
 						"invalid_room_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -3990,8 +4071,7 @@
 						"room",
 						"{{roomId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4008,10 +4088,14 @@
 							"});\r",
 							"\r",
 							"pm.test(\"rooms are retrieved with correct values\", function () {\r",
-							"  var jsonData = pm.response.json();\r",
-							"  pm.expect(jsonData).to.be.an('array');\r",
+							"  var rooms = pm.response.json();\r",
+							"  pm.expect(rooms).to.be.an('array');\r",
+							"  pm.expect(rooms.length).to.be.above(1);\r",
 							"\r",
-							"  jsonData.forEach(function (room) {\r",
+							"  var lastRoom = rooms[rooms.length - 1];\r",
+							"  pm.expect(lastRoom.miscRoom).to.eql(1);\r",
+							"\r",
+							"  rooms.forEach(function (room) {\r",
 							"    pm.expect(room.identityId).to.eql(pm.globals.get(\"identityId\"));\r",
 							"    pm.expect(room.dwellingId).to.eql(pm.globals.get(\"dwellingId\"));\r",
 							"    pm.expect(room.deletedFlag).to.eql(0);\r",
@@ -4138,8 +4222,7 @@
 							"equals": true
 						}
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4224,8 +4307,7 @@
 							"equals": true
 						}
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4280,8 +4362,7 @@
 					"path": [
 						"room"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4415,8 +4496,7 @@
 						"room",
 						"{{roomId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4472,8 +4552,7 @@
 						"room",
 						"some_room_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4605,8 +4684,7 @@
 						"room",
 						"{{roomId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4686,8 +4764,7 @@
 						"room",
 						"invalid_room_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4827,8 +4904,7 @@
 						"room",
 						"{{roomId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -4953,8 +5029,127 @@
 						"room",
 						"{{roomId}}"
 					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "room-delete-fail-misc-room",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"  pm.response.to.have.status(403);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"error message is returned\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.code).to.include(403);\r",
+							"  pm.expect(jsonData.message).to.not.eql(null);\r",
+							"});"
+						]
+					}
 				},
-				"description": null
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"authorization\");\r",
+							"pm.globals.unset(\"identityId\");\r",
+							"pm.globals.unset(\"dwellingId\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"const dwellingName = 'name-' + String(new Date().getTime());\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var idToken = res.json().idToken;\r",
+							"\r",
+							"  const getOrCreateDwellingRequest = {\r",
+							"    url: 'https://api-blue.hopo.io/dwelling/getOrCreate',\r",
+							"    method: 'POST',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken],\r",
+							"    body: {\r",
+							"      mode: 'raw',\r",
+							"      raw: JSON.stringify({\r",
+							"        dwellingName: dwellingName,\r",
+							"        dwellingType: 'type',\r",
+							"        dwellingRooms: 1\r",
+							"      })\r",
+							"    }\r",
+							"  };\r",
+							"\r",
+							"  pm.sendRequest(getOrCreateDwellingRequest, function (err1, res1) {\r",
+							"    var dwellingId = res1.json().dwellingId;\r",
+							"\r",
+							"    pm.sendRequest(listRoomsPayload(idToken, dwellingId), function (err2, res2) {\r",
+							"      var rooms = res2.json();\r",
+							"      var miscRoom = rooms[rooms.length - 1];\r",
+							"      var roomId = miscRoom.roomId;\r",
+							"\r",
+							"      pm.globals.set('authorization', idToken);\r",
+							"      pm.globals.set('roomId', roomId);\r",
+							"    });\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"function listRoomsPayload (idToken, dwellingId) {\r",
+							"  return {\r",
+							"    url: 'https://api-blue.hopo.io/room?dwellingId=' + dwellingId,\r",
+							"    method: 'GET',\r",
+							"    header: ['content-type:application/json', 'authorization:' + idToken]\r",
+							"  };\r",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/room/{{roomId}}",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"room",
+						"{{roomId}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -5010,8 +5205,7 @@
 						"room",
 						"some_room_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5091,8 +5285,7 @@
 						"room",
 						"invalid_room_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5229,8 +5422,7 @@
 						"room",
 						"{{roomId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5332,8 +5524,7 @@
 					"path": [
 						"item"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5388,8 +5579,7 @@
 					"path": [
 						"item"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5489,8 +5679,7 @@
 					"path": [
 						"item"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5576,8 +5765,7 @@
 					"path": [
 						"item"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5689,8 +5877,7 @@
 					"path": [
 						"item"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5800,8 +5987,7 @@
 					"path": [
 						"itemBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5856,8 +6042,7 @@
 					"path": [
 						"itemBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -5958,8 +6143,7 @@
 					"path": [
 						"itemBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6046,8 +6230,7 @@
 					"path": [
 						"itemBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6160,8 +6343,7 @@
 					"path": [
 						"itemBatch"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6285,8 +6467,7 @@
 						"item",
 						"{{itemId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6342,8 +6523,7 @@
 						"item",
 						"{{itemId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6423,8 +6603,7 @@
 						"item",
 						"invalid_item_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6553,8 +6732,7 @@
 						"item",
 						"{{itemId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6688,8 +6866,7 @@
 							"equals": true
 						}
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6774,8 +6951,7 @@
 							"equals": true
 						}
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6830,8 +7006,7 @@
 					"path": [
 						"item"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -6955,8 +7130,7 @@
 						"item",
 						"{{itemId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -7012,8 +7186,7 @@
 						"item",
 						"some_item_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -7136,8 +7309,7 @@
 						"item",
 						"{{itemId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -7217,8 +7389,7 @@
 						"item",
 						"invalid_item_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -7348,8 +7519,7 @@
 						"item",
 						"{{itemId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -7467,8 +7637,7 @@
 						"item",
 						"{{itemId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -7524,8 +7693,7 @@
 						"item",
 						"some_item_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -7605,8 +7773,7 @@
 						"item",
 						"invalid_item_id"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		},
@@ -7736,8 +7903,7 @@
 						"item",
 						"{{itemId}}"
 					]
-				},
-				"description": null
+				}
 			},
 			"response": []
 		}

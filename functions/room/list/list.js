@@ -36,14 +36,15 @@ module.exports.index = (event, context, callback) => {
   getRooms(reqParams)
     .then(function (rooms) {
       console.log('========== rooms: ' + JSON.stringify(rooms))
-      Promise
-        .map(rooms, function (room) {
-          return addItemCount(room)
-        })
-        .then(function (rooms) {
-          // return success response
-          callbacker.makeCallback(null, lib.getResponse(rooms))
-        })
+      rooms = sortRooms(rooms)
+
+      Promise.map(rooms, function (room) {
+        return addItemCount(room)
+      })
+      .then(function (rooms) {
+        // return success response
+        callbacker.makeCallback(null, lib.getResponse(rooms))
+      })
     })
     .catch(function (err) {
       console.log(err, err.stack)
@@ -97,6 +98,25 @@ function getRooms (reqParams) {
       }
     })
   })
+}
+
+function sortRooms (rooms) {
+  var miscRoom
+  var sortedRooms = []
+
+  rooms.forEach(function (room) {
+    if (room.miscRoom && room.miscRoom === 1) {
+      miscRoom = room
+    } else {
+      sortedRooms.push(room)
+    }
+  })
+
+  if (miscRoom) {
+    sortedRooms.push(miscRoom)
+  }
+
+  return sortedRooms
 }
 
 // get itemCount for room

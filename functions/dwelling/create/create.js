@@ -13,6 +13,8 @@ const docClient = new AWS.DynamoDB.DocumentClient()
 // lib.Callbacker contains methods which return different responses to client
 const Callbacker = lib.Callbacker
 
+const MISC_ROOM_NAME = 'Misc'
+
 module.exports.index = (event, context, callback) => {
   console.log('=============== event:', JSON.stringify(event))
 
@@ -43,6 +45,9 @@ module.exports.index = (event, context, callback) => {
         callbacker.makeCallback(null, lib.getResponse422(message))
       } else {
         return createDwelling(dwellingData, cognitoUser)
+          .then(function (dwelling) {
+            return createMiscRoom(dwelling, cognitoUser)
+          })
           .then(function (dwelling) {
             console.log('========== dwelling: ' + JSON.stringify(dwelling))
 
@@ -128,6 +133,40 @@ function createDwelling (dwellingData, cognitoUser) {
     var params = {
       TableName: process.env.DDB_TABLE_DWELLING,
       Item: dwelling
+    }
+
+    // call DynamoDB "put" API
+    docClient.put(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        resolve(dwelling)
+      }
+    })
+  })
+}
+
+function createMiscRoom (dwelling, cognitoUser) {
+  return new Promise(function (resolve, reject) {
+    var roomId = uuidv1() // use UUID for roomId
+    var now = new Date().toISOString()
+
+    var room = {
+      roomId: roomId,
+      identityId: cognitoUser,
+      dwellingId: dwelling.dwellingId,
+      roomName: MISC_ROOM_NAME,
+      roomType: MISC_ROOM_NAME,
+      miscRoom: 1,
+      deletedFlag: 0,
+      created: now,
+      updated: now
+    }
+
+    var params = {
+      TableName: process.env.DDB_TABLE_ROOM,
+      Item: room
     }
 
     // call DynamoDB "put" API

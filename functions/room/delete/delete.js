@@ -30,6 +30,8 @@ module.exports.index = (event, context, callback) => {
       // Otherwise proceed to delete room
       if (!room || room.identityId !== cognitoUser) {
         callbacker.makeCallback(null, lib.getResponse404())
+      } else if (room.miscRoom && room.miscRoom === 1) {
+        callbacker.makeCallback(null, lib.getResponse403('Misc room is not allowed to be deleted'))
       } else {
         deleteRoom(roomId)
           .then(function (room) {

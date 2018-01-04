@@ -31,12 +31,21 @@ module.exports.index = (event, context, callback) => {
       if (!dwelling || dwelling.identityId !== cognitoUser) {
         callbacker.makeCallback(null, lib.getResponse404())
       } else {
+        var deletedDwelling
+
         deleteDwelling(dwellingId)
-          .then(function (dwelling) {
-            console.log('========== dwelling: ' + JSON.stringify(dwelling))
+          .then(function (retValue) {
+            deletedDwelling = retValue
+            return deleteRooms(cognitoUser)
+          })
+          .then(function () {
+            return deleteItems(cognitoUser)
+          })
+          .then(function () {
+            console.log('========== deletedDwelling: ' + JSON.stringify(deletedDwelling))
 
             // return success response
-            callbacker.makeCallback(null, lib.getResponse(dwelling))
+            callbacker.makeCallback(null, lib.getResponse(deletedDwelling))
           })
       }
     })
@@ -98,6 +107,142 @@ function deleteDwelling (dwellingId) {
         reject(err)
       } else {
         resolve(data.Attributes)
+      }
+    })
+  })
+}
+
+function deleteRooms (cognitoUser) {
+  return getRooms(cognitoUser)
+    .then(function (rooms) {
+      return Promise.map(rooms, function (room) {
+          return deleteRoom(room)
+        })
+    })
+}
+
+// get rooms from DynamoDB
+function getRooms (cognitoUser) {
+  return new Promise(function (resolve, reject) {
+    // query DynamoDB using secondary index 'identityId-index'
+    // add FilterExpression to return only rooms with deletedFlag=0
+
+    var params = {
+      TableName: process.env.DDB_TABLE_ROOM,
+      IndexName: 'identityId-index',
+      KeyConditionExpression: 'identityId = :identityId',
+      FilterExpression: 'deletedFlag = :deletedFlag',
+      ExpressionAttributeValues: {
+        ':identityId': cognitoUser,
+        ':deletedFlag': 0
+      }
+    }
+
+    docClient.query(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        resolve(data.Items)
+      }
+    })
+  })
+}
+
+// delete room object in DynamoDB
+function deleteRoom (room) {
+  return new Promise(function (resolve, reject) {
+    var now = new Date().toISOString()
+    var values = {
+      ':updated': now,
+      ':deletedFlag': 1
+    }
+
+    var updateExpression = 'set updated = :updated, deletedFlag = :deletedFlag'
+    var params = {
+      TableName: process.env.DDB_TABLE_ROOM,
+      Key: {
+        roomId: room.roomId
+      },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeValues: values
+    }
+
+    // call DynamoDB "update" API
+    docClient.update(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
+}
+
+function deleteItems (cognitoUser) {
+  return getItems(cognitoUser)
+    .then(function (items) {
+      return Promise.map(items, function (item) {
+          return deleteItem(item)
+        })
+    })
+}
+
+// get items from DynamoDB
+function getItems (cognitoUser) {
+  return new Promise(function (resolve, reject) {
+    // query DynamoDB using secondary index 'identityId-index'
+    // add FilterExpression to return only items with deletedFlag=0
+
+    var params = {
+      TableName: process.env.DDB_TABLE_ITEM,
+      IndexName: 'identityId-index',
+      KeyConditionExpression: 'identityId = :identityId',
+      FilterExpression: 'deletedFlag = :deletedFlag',
+      ExpressionAttributeValues: {
+        ':identityId': cognitoUser,
+        ':deletedFlag': 0
+      }
+    }
+
+    docClient.query(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        resolve(data.Items)
+      }
+    })
+  })
+}
+
+// delete item object in DynamoDB
+function deleteItem (item) {
+  return new Promise(function (resolve, reject) {
+    var now = new Date().toISOString()
+    var values = {
+      ':updated': now,
+      ':deletedFlag': 1
+    }
+
+    var updateExpression = 'set updated = :updated, deletedFlag = :deletedFlag'
+    var params = {
+      TableName: process.env.DDB_TABLE_ITEM,
+      Key: {
+        itemId: item.itemId
+      },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeValues: values
+    }
+
+    // call DynamoDB "update" API
+    docClient.update(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        resolve()
       }
     })
   })
