@@ -29,8 +29,15 @@ module.exports.index = (event, context, callback) => {
       } else {
         getRoomCount(dwelling.dwellingId)
           .then(function (roomCount) {
-            console.log('========== dwelling: ' + JSON.stringify(dwelling))
             dwelling.roomCount = roomCount
+            return getItemCost(cognitoUser)
+          })
+          .then(function (itemCostData) {
+            dwelling.itemCount = itemCostData[0]
+            dwelling.itemCost = itemCostData[1]
+            dwelling.itemCostCurrency = itemCostData[2]
+
+            console.log('========== dwelling: ' + JSON.stringify(dwelling))
             callbacker.makeCallback(null, lib.getResponse(dwelling))
           })
       }
@@ -92,6 +99,48 @@ function getRoomCount (dwellingId) {
         reject(err)
       } else {
         resolve(data.Items.length)
+      }
+    })
+  })
+}
+
+function getItemCost (cognitoUser) {
+  return new Promise(function (resolve, reject) {
+    // query DynamoDB using secondary index 'identityId-index' and KeyConditionExpression
+    // add FilterExpression to return only rooms with deletedFlag=0
+    var params = {
+      TableName: process.env.DDB_TABLE_ITEM,
+      IndexName: 'identityId-index',
+      KeyConditionExpression: 'identityId = :identityId',
+      FilterExpression: 'deletedFlag = :deletedFlag',
+      ExpressionAttributeValues: {
+        ':identityId': cognitoUser,
+        ':deletedFlag': 0
+      }
+    }
+
+    docClient.query(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        var itemCount = 0
+        var itemCost = 0
+        var itemCostCurrency
+
+        data.Items.forEach(function (item) {
+          var quantity = parseFloat(item.quantity) || 0
+          var price = parseFloat(item.price) || 0
+
+          itemCount += quantity
+          itemCost += quantity * price
+
+          if (item.priceCurrency) {
+            itemCostCurrency = item.priceCurrency
+          }
+        })
+
+        resolve([itemCount, itemCost, itemCostCurrency])
       }
     })
   })

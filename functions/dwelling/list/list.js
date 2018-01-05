@@ -17,9 +17,17 @@ module.exports.index = (event, context, callback) => {
 
   var callbacker = new Callbacker(callback)
 
+  // retrieve data from "event" object
+  var cognitoUser = event.requestContext.authorizer.claims['cognito:username']
+
   // use Promise to sequentially execute each step
   // get dwellings from DynamoDB
   getDwellings()
+    .then(function (dwellings) {
+      return Promise.map(dwellings, function (dwelling) {
+        return getDwellingExtraInfo(dwelling, cognitoUser)
+      })
+    })
     .then(function (dwellings) {
       console.log('========== dwellings: ' + JSON.stringify(dwellings))
 
@@ -52,6 +60,90 @@ function getDwellings() {
         reject(err)
       } else {
         resolve(data.Items)
+      }
+    })
+  })
+}
+
+function getDwellingExtraInfo (dwelling, cognitoUser) {
+  return getRoomCount(dwelling.dwellingId)
+    .then(function (roomCount) {
+      dwelling.roomCount = roomCount
+      return getItemCost(cognitoUser)
+    })
+    .then(function (itemCostData) {
+      dwelling.itemCount = itemCostData[0]
+      dwelling.itemCost = itemCostData[1]
+      dwelling.itemCostCurrency = itemCostData[2]
+
+      return Promise.resolve(dwelling)
+    })
+}
+
+// get roomCount for dwelling
+function getRoomCount (dwellingId) {
+  return new Promise(function (resolve, reject) {
+    // query DynamoDB using secondary index 'dwellingId-roomName-index' and KeyConditionExpression
+    // add FilterExpression to return only rooms with deletedFlag=0
+    var params = {
+      TableName: process.env.DDB_TABLE_ROOM,
+      IndexName: 'dwellingId-roomName-index',
+      KeyConditionExpression: 'dwellingId = :dwellingId',
+      FilterExpression: 'deletedFlag = :deletedFlag',
+      ExpressionAttributeValues: {
+        ':dwellingId': dwellingId,
+        ':deletedFlag': 0
+      }
+    }
+
+    docClient.query(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        resolve(data.Items.length)
+      }
+    })
+  })
+}
+
+function getItemCost (cognitoUser) {
+  return new Promise(function (resolve, reject) {
+    // query DynamoDB using secondary index 'identityId-index' and KeyConditionExpression
+    // add FilterExpression to return only rooms with deletedFlag=0
+    var params = {
+      TableName: process.env.DDB_TABLE_ITEM,
+      IndexName: 'identityId-index',
+      KeyConditionExpression: 'identityId = :identityId',
+      FilterExpression: 'deletedFlag = :deletedFlag',
+      ExpressionAttributeValues: {
+        ':identityId': cognitoUser,
+        ':deletedFlag': 0
+      }
+    }
+
+    docClient.query(params, function (err, data) {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        var itemCount = 0
+        var itemCost = 0
+        var itemCostCurrency
+
+        data.Items.forEach(function (item) {
+          var quantity = parseFloat(item.quantity) || 0
+          var price = parseFloat(item.price) || 0
+
+          itemCount += quantity
+          itemCost += quantity * price
+
+          if (item.priceCurrency) {
+            itemCostCurrency = item.priceCurrency
+          }
+        })
+
+        resolve([itemCount, itemCost, itemCostCurrency])
       }
     })
   })
