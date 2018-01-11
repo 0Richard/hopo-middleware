@@ -19,38 +19,45 @@ module.exports.index = (event, context, callback) => {
 
   // retrieve data from "event" object
   var cognitoUser = event.requestContext.authorizer.claims['cognito:username']
+  var cognitoGroup = event.requestContext.authorizer.claims['cognito:groups']
+  var groups = (cognitoGroup ? cognitoGroup.split(',') : [])
+  var isAdmin = (groups.indexOf('admin') >= 0)
 
   // use Promise to sequentially execute each step
   // delete all dwellings for the user
-  getDwellings(cognitoUser)
-    .then(function (dwellings) {
-      console.log('===== dwellings: ' + dwellings.length)
-      return deleteDwellings(dwellings)
-    })
-    .then(function () {
-      return getRooms(cognitoUser)
-    })
-    .then(function (rooms) {
-      console.log('===== rooms: ' + rooms.length)
-      return deleteRooms(rooms)
-    })
-    .then(function () {
-      return getItems(cognitoUser)
-    })
-    .then(function (items) {
-      console.log('===== items: ' + items.length)
-      return deleteItems(items)
-    })
-    .then(function () {
-      // return success response
-      callbacker.makeCallback(null, lib.getResponse('OK'))
-    })
-    .catch(function (err) {
-      console.log(err, err.stack)
+  if (isAdmin) {
+    getDwellings(cognitoUser)
+      .then(function (dwellings) {
+        console.log('===== dwellings: ' + dwellings.length)
+        return deleteDwellings(dwellings)
+      })
+      .then(function () {
+        return getRooms(cognitoUser)
+      })
+      .then(function (rooms) {
+        console.log('===== rooms: ' + rooms.length)
+        return deleteRooms(rooms)
+      })
+      .then(function () {
+        return getItems(cognitoUser)
+      })
+      .then(function (items) {
+        console.log('===== items: ' + items.length)
+        return deleteItems(items)
+      })
+      .then(function () {
+        // return success response
+        callbacker.makeCallback(null, lib.getResponse('OK'))
+      })
+      .catch(function (err) {
+        console.log(err, err.stack)
 
-      // return error response
-      callbacker.makeCallback(err)
-    })
+        // return error response
+        callbacker.makeCallback(err)
+      })
+  } else {
+    callbacker.makeCallback(null, lib.getResponse403())
+  }
 }
 
 function getDwellings(cognitoUser) {
