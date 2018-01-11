@@ -80,7 +80,7 @@ function getDwellingExtraInfo (dwelling, cognitoUser) {
     })
     .then(function (itemCostData) {
       dwelling.itemCount = itemCostData[0]
-      dwelling.itemCost = itemCostData[1]
+      dwelling.itemTotalCost = itemCostData[1]
       dwelling.itemCostCurrency = itemCostData[2]
 
       return Promise.resolve(dwelling)
@@ -135,7 +135,7 @@ function getItemCost (cognitoUser) {
         reject(err)
       } else {
         var itemCount = 0
-        var itemCost = 0
+        var itemTotalCost = 0
         var itemCostCurrency
 
         data.Items.forEach(function (item) {
@@ -143,14 +143,14 @@ function getItemCost (cognitoUser) {
           var price = parseFloat(item.price) || 0
 
           itemCount += quantity
-          itemCost += quantity * price
+          itemTotalCost += quantity * price
 
           if (item.priceCurrency) {
             itemCostCurrency = item.priceCurrency
           }
         })
 
-        resolve([itemCount, itemCost, itemCostCurrency])
+        resolve([itemCount, itemTotalCost, itemCostCurrency])
       }
     })
   })
