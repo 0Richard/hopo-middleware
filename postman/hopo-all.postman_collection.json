@@ -7,6 +7,194 @@
 	},
 	"item": [
 		{
+			"name": "user-refresh-success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"idToken/accessToken is refreshed successfully\", function () {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(jsonData.idToken).to.not.eql(null);",
+							"  pm.expect(jsonData.accessToken).to.not.eql(null);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"refreshToken\");\r",
+							"\r",
+							"const username = 'steven';\r",
+							"const password = 'AAAaaa$$$000';\r",
+							"\r",
+							"const loginRequest = {\r",
+							"  url: 'https://api-blue.hopo.io/user/login',\r",
+							"  method: 'POST',\r",
+							"  header: 'content-type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      username: username,\r",
+							"      password: password\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"  \r",
+							"pm.sendRequest(loginRequest, function (err, res) {\r",
+							"  var refreshToken = res.json().refreshToken;\r",
+							"  pm.globals.set('refreshToken', refreshToken);\r",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/user/refresh",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"user",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-refresh-fail-missing-field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 422\", function () {\r",
+							"  pm.response.to.have.status(422);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"error message is returned\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.code).to.include(422);\r",
+							"  pm.expect(jsonData.message).to.not.eql(null);\r",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"otherField\": \"otherValue\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/user/refresh",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"user",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-refresh-fail-invalid-refresh-token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"error message is returned\", function () {\r",
+							"  var jsonData = pm.response.json();\r",
+							"  pm.expect(jsonData.code).to.include(401);\r",
+							"  pm.expect(jsonData.message).to.not.eql(null);\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.globals.unset(\"refreshToken\");\r",
+							"\r",
+							"pm.globals.set('refreshToken', 'invalidRefreshToken');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+				},
+				"url": {
+					"raw": "https://api-blue.hopo.io/user/refresh",
+					"protocol": "https",
+					"host": [
+						"api-blue",
+						"hopo",
+						"io"
+					],
+					"path": [
+						"user",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "dwelling-create-success",
 			"event": [
 				{

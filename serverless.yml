@@ -70,6 +70,16 @@ functions:
           method: post
           cors: true
           authorizer: null
+  user-refresh:
+    name: ${self:provider.stage}-greenUserRefresh
+    handler: functions/user/refresh/refresh.index
+    role: defaultRole
+    events:
+      - http:
+          path: user/refresh
+          method: post
+          cors: true
+          authorizer: null
   dwelling-create:
     name: ${self:provider.stage}-greenDwellingCreate
     handler: functions/dwelling/create/create.index
