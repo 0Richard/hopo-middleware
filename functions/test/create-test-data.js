@@ -84,7 +84,6 @@ function createDwelling (cognitoUser) {
       identityId: cognitoUser,
       dwellingName: 'name-' + String(new Date().getTime()),
       dwellingType: 'type-' + String(new Date().getTime()),
-      dwellingRooms: 1,
       deletedFlag: 0,
       created: now,
       updated: now

@@ -40,8 +40,7 @@ describe('dwelling-update', () => {
     return new Promise(function (resolve, reject) {
       let data = {
         dwellingName: dwellingName,
-        dwellingType: dwellingType,
-        dwellingRooms: 1
+        dwellingType: dwellingType
       }
 
       request(util.getCreateDwellingPayload(global.idToken, data), function (error, response, body) {
@@ -51,15 +50,13 @@ describe('dwelling-update', () => {
     .then(function (dwellingId) {
       let newDwellingName = dwellingName + '-new'
       let newDwellingType = dwellingType + '-new'
-      let newDwellingRooms = 2
 
       let pathParameters = {
         dwelling_id: dwellingId
       }
       let data = {
         dwellingName: newDwellingName,
-        dwellingType: newDwellingType,
-        dwellingRooms: newDwellingRooms
+        dwellingType: newDwellingType
       }
 
       return wrapped.run(util.updateEvent(username, pathParameters, data)).then((response) => {
@@ -73,7 +70,6 @@ describe('dwelling-update', () => {
         expect(body).to.have.property('identityId', username)
         expect(body).to.have.property('dwellingName', newDwellingName)
         expect(body).to.have.property('dwellingType', newDwellingType)
-        expect(body).to.have.property('dwellingRooms', newDwellingRooms)
       })
     })
   })
@@ -83,8 +79,7 @@ describe('dwelling-update', () => {
     return new Promise(function (resolve, reject) {
       let data = {
         dwellingName: dwellingName,
-        dwellingType: dwellingType,
-        dwellingRooms: 1
+        dwellingType: dwellingType
       }
 
       request(util.getCreateDwellingPayload(global.idToken, data), function (error, response, body) {
@@ -117,8 +112,7 @@ describe('dwelling-update', () => {
     }
     let data = {
       dwellingName: dwellingName + '-new',
-      dwellingType: dwellingType + '-new',
-      dwellingRooms: 2
+      dwellingType: dwellingType + '-new'
     }
 
     return wrapped.run(util.updateEvent(username, pathParameters, data)).then((response) => {
@@ -138,8 +132,7 @@ describe('dwelling-update', () => {
     return new Promise(function (resolve, reject) {
       let data = {
         dwellingName: dwellingName,
-        dwellingType: dwellingType,
-        dwellingRooms: 1
+        dwellingType: dwellingType
       }
 
       request(util.getCreateDwellingPayload(global.idToken, data), function (error, response, body) {
@@ -152,8 +145,7 @@ describe('dwelling-update', () => {
       }
       let data = {
         dwellingName: dwellingName + '-new',
-        dwellingType: dwellingType + '-new',
-        dwellingRooms: 2
+        dwellingType: dwellingType + '-new'
       }
       let anotherUsername = 'lujin'
 

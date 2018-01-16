@@ -40,8 +40,7 @@ describe('dwelling-delete', () => {
     return new Promise(function (resolve, reject) {
       let data = {
         dwellingName: dwellingName,
-        dwellingType: dwellingType,
-        dwellingRooms: 1
+        dwellingType: dwellingType
       }
 
       request(util.getCreateDwellingPayload(global.idToken, data), function (error, response, body) {
@@ -88,8 +87,7 @@ describe('dwelling-delete', () => {
     return new Promise(function (resolve, reject) {
       let data = {
         dwellingName: dwellingName,
-        dwellingType: dwellingType,
-        dwellingRooms: 1
+        dwellingType: dwellingType
       }
 
       request(util.getCreateDwellingPayload(global.idToken, data), function (error, response, body) {

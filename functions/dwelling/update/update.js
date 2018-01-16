@@ -67,7 +67,7 @@ function validateData (itemData) {
   var validated
   var message
 
-  var fields = ['dwellingName', 'dwellingType', 'dwellingRooms', 'addressLine1', 'addressLine2', 'city', 'postCode']
+  var fields = ['dwellingName', 'dwellingType', 'addressLine1', 'addressLine2', 'city', 'postCode']
   var itemDataKeys = Object.keys(itemData)
   var matchFields = u.intersection(fields, itemDataKeys)
 

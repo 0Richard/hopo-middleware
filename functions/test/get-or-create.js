@@ -82,7 +82,6 @@ function createDwelling (dwellingData, cognitoUser) {
       identityId: cognitoUser,
       dwellingName: dwellingData.dwellingName,
       dwellingType: dwellingData.dwellingType,
-      dwellingRooms: dwellingData.dwellingRooms,
       deletedFlag: 0,
       created: now,
       updated: now

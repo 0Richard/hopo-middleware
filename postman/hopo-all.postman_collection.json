@@ -278,7 +278,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling",
@@ -396,7 +396,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling",
@@ -452,7 +452,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling",
@@ -535,7 +535,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+					"raw": "{\n  \"dwellingType\": \"type\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling",
@@ -629,8 +629,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: 'name-' + String(new Date().getTime()),\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -653,7 +652,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\",\n  \"dwellingRooms\": 4\n}"
+					"raw": "{\n  \"dwellingName\": \"{{dwellingName}}\",\n  \"dwellingType\": \"type\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling",
@@ -737,7 +736,6 @@
 							"        raw: JSON.stringify({\r",
 							"          dwellingName: dwellingName,\r",
 							"          dwellingType: 'type',\r",
-							"          dwellingRooms: 1,\r",
 							"          addressLine1: addressLine1,\r",
 							"          addressLine2: addressLine2,\r",
 							"          city: city,\r",
@@ -891,8 +889,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -1173,8 +1170,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: username + '-' + String(new Date().getTime()),\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -1425,8 +1421,7 @@
 							"        mode: 'raw',\r",
 							"        raw: JSON.stringify({\r",
 							"          dwellingName: dwellingName,\r",
-							"          dwellingType: 'type',\r",
-							"          dwellingRooms: 1\r",
+							"          dwellingType: 'type'\r",
 							"        })\r",
 							"      }\r",
 							"    };\r",
@@ -1571,8 +1566,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -1812,8 +1806,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  }\r",
@@ -1881,7 +1874,6 @@
 							"  var jsonData = pm.response.json();\r",
 							"  pm.expect(jsonData.dwellingName).to.eql(pm.globals.get(\"newDwellingName\"));\r",
 							"  pm.expect(jsonData.dwellingType).to.eql(pm.globals.get(\"newDwellingType\"));\r",
-							"  pm.expect(jsonData.dwellingRooms).to.eql(pm.globals.get(\"newDwellingRooms\"));\r",
 							"});"
 						]
 					}
@@ -1922,8 +1914,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -1933,7 +1924,6 @@
 							"    pm.globals.set('dwellingId', res1.json().dwellingId);\r",
 							"    pm.globals.set('newDwellingName', dwellingName + '-new');\r",
 							"    pm.globals.set('newDwellingType', 'type-new');\r",
-							"    pm.globals.set('newDwellingRooms', res1.json().dwellingRooms + 1);\r",
 							"  });\r",
 							"});"
 						]
@@ -1954,7 +1944,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingName\": \"{{newDwellingName}}\",\n  \"dwellingType\": \"{{newDwellingType}}\",\n  \"dwellingRooms\": {{newDwellingRooms}}\n}"
+					"raw": "{\n  \"dwellingName\": \"{{newDwellingName}}\",\n  \"dwellingType\": \"{{newDwellingType}}\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
@@ -2010,7 +2000,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\",\n  \"dwellingRooms\": 1\n}"
+					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling/some_dwelling_id",
@@ -2084,8 +2074,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -2196,7 +2185,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\",\n  \"dwellingRooms\": 1\n}"
+					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling/invalid_dwelling_id",
@@ -2294,8 +2283,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: username + '-' + String(new Date().getTime()),\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -2330,7 +2318,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\",\n  \"dwellingRooms\": 1\n}"
+					"raw": "{\n  \"dwellingName\": \"some_new_name\",\n  \"dwellingType\": \"some_new_type\"\n}"
 				},
 				"url": {
 					"raw": "https://api-blue.hopo.io/dwelling/{{dwellingId}}",
@@ -2404,8 +2392,7 @@
 							"        mode: 'raw',\r",
 							"        raw: JSON.stringify({\r",
 							"          dwellingName: dwellingName,\r",
-							"          dwellingType: 'type',\r",
-							"          dwellingRooms: 1\r",
+							"          dwellingType: 'type'\r",
 							"        })\r",
 							"      }\r",
 							"    };\r",
@@ -2683,8 +2670,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: username + '-' + String(new Date().getTime()),\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -2797,8 +2783,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -2958,8 +2943,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -3144,8 +3128,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -3279,8 +3262,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -3440,8 +3422,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -3626,8 +3607,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -3755,8 +3735,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -3910,8 +3889,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -4172,8 +4150,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -4329,8 +4306,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -4613,8 +4589,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -4801,8 +4776,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -5005,8 +4979,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -5152,8 +5125,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -5278,8 +5250,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",
@@ -5526,8 +5497,7 @@
 							"      mode: 'raw',\r",
 							"      raw: JSON.stringify({\r",
 							"        dwellingName: dwellingName,\r",
-							"        dwellingType: 'type',\r",
-							"        dwellingRooms: 1\r",
+							"        dwellingType: 'type'\r",
 							"      })\r",
 							"    }\r",
 							"  };\r",

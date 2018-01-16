@@ -39,8 +39,7 @@ describe('dwelling-create', () => {
   it('should create a dwelling', () => {
     let data = {
       dwellingName: dwellingName,
-      dwellingType: dwellingType,
-      dwellingRooms: 1
+      dwellingType: dwellingType
     }
 
     return wrapped.run(util.createEvent(username, data)).then((response) => {
@@ -80,8 +79,7 @@ describe('dwelling-create', () => {
   it('should NOT create a dwelling due to dwelling exists for current user', () => {
     let data = {
       dwellingName: dwellingName,
-      dwellingType: dwellingType,
-      dwellingRooms: 1
+      dwellingType: dwellingType
     }
 
     return new Promise(function (resolve, reject) {

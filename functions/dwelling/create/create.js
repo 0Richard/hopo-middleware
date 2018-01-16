@@ -71,15 +71,14 @@ function validateData (dwellingData) {
 
   var dwellingName = dwellingData.dwellingName
   var dwellingType = dwellingData.dwellingType
-  var dwellingRooms = dwellingData.dwellingRooms
 
-  // dwellingName/dwellingType/dwellingRooms must be present
-  if (dwellingName && dwellingType && dwellingRooms) {
+  // dwellingName/dwellingType must be present
+  if (dwellingName && dwellingType) {
     validated = true
     message = null
   } else {
     validated = false
-    message = 'dwellingName/dwellingType/dwellingRooms is required'
+    message = 'dwellingName/dwellingType is required'
   }
 
   return {validated, message}
@@ -120,7 +119,6 @@ function createDwelling (dwellingData, cognitoUser) {
       identityId: cognitoUser,
       dwellingName: dwellingData.dwellingName,
       dwellingType: dwellingData.dwellingType,
-      dwellingRooms: dwellingData.dwellingRooms,
       addressLine1: dwellingData.addressLine1,
       addressLine2: dwellingData.addressLine2,
       city: dwellingData.city,
