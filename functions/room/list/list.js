@@ -140,7 +140,26 @@ function addItemCount (room) {
         console.log(err, err.stack)
         reject(err)
       } else {
-        room.itemCount = data.Items.length
+        var itemCount = 0
+        var itemCost = 0
+        var itemCostCurrency
+
+        data.Items.forEach(function (item) {
+          var quantity = parseFloat(item.quantity) || 0
+          var price = parseFloat(item.price) || 0
+
+          itemCount += quantity
+          itemCost += quantity * price
+
+          if (item.priceCurrency) {
+            itemCostCurrency = item.priceCurrency
+          }
+        })
+
+        room.itemCount = itemCount
+        room.itemCost = itemCost
+        room.itemCostCurrency = itemCostCurrency
+
         resolve(room)
       }
     })

@@ -32,9 +32,12 @@ module.exports.index = (event, context, callback) => {
         callbacker.makeCallback(null, lib.getResponse404())
       } else {
         // Get the no. of items for current room
-        getItemCount(roomId)
-          .then(function (itemCount) {
-            room.itemCount = itemCount
+        getItemCost(roomId)
+          .then(function (itemCostData) {
+            room.itemCount = itemCostData[0]
+            room.itemCost = itemCostData[1]
+            room.itemCostCurrency = itemCostData[2]
+
             console.log('========== room: ' + JSON.stringify(room))
             callbacker.makeCallback(null, lib.getResponse(room))
           })
@@ -72,7 +75,7 @@ function getRoom(roomId) {
 }
 
 // get itemCount for room
-function getItemCount (roomId) {
+function getItemCost (roomId) {
   return new Promise(function (resolve, reject) {
     // query DynamoDB using secondary index 'roomId-description-index' and KeyConditionExpression
     // add FilterExpression to return only items with deletedFlag=0
@@ -92,7 +95,23 @@ function getItemCount (roomId) {
         console.log(err, err.stack)
         reject(err)
       } else {
-        resolve(data.Items.length)
+        var itemCount = 0
+        var itemCost = 0
+        var itemCostCurrency
+
+        data.Items.forEach(function (item) {
+          var quantity = parseFloat(item.quantity) || 0
+          var price = parseFloat(item.price) || 0
+
+          itemCount += quantity
+          itemCost += quantity * price
+
+          if (item.priceCurrency) {
+            itemCostCurrency = item.priceCurrency
+          }
+        })
+
+        resolve([itemCount, itemCost, itemCostCurrency])
       }
     })
   })
