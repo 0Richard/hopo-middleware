@@ -80,6 +80,16 @@ functions:
           method: post
           cors: true
           authorizer: null
+  user-invalidate-refresh:
+    name: ${self:provider.stage}-greenUserInvalidateRefresh
+    handler: functions/user/refresh/invalidate-refresh.index
+    role: defaultRole
+    events:
+      - http:
+          path: user/invalidate-refresh
+          method: post
+          cors: true
+          authorizer: null
   dwelling-create:
     name: ${self:provider.stage}-greenDwellingCreate
     handler: functions/dwelling/create/create.index
