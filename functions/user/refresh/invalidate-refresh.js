@@ -40,7 +40,7 @@ module.exports.index = (event, context, callback) => {
           console.log(err, err.stack)
           callbacker.makeCallback(null, lib.getResponse401(err.message))
         } else {
-          callbacker.makeCallback(null, lib.getResponse())
+          callbacker.makeCallback(null, lib.getResponse('OK'))
         }
       })
     } catch (err) {
