@@ -14,7 +14,7 @@
     "serverless-mocha-plugin": "latest"
   },
   "dependencies": {
-    "amazon-cognito-identity-js": "latest",
+    "amazon-cognito-identity-js": "1.31.0",
     "bluebird": "latest",
     "gm": "latest",
     "moment": "latest",
