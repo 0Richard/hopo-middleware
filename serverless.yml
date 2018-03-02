@@ -89,7 +89,8 @@ functions:
           path: user/invalidate-refresh
           method: post
           cors: true
-          authorizer: null
+          authorizer:
+            arn: arn:aws:cognito-idp:eu-west-2:729426711647:userpool/eu-west-2_Rzcn6lEzg
   dwelling-create:
     name: ${self:provider.stage}-greenDwellingCreate
     handler: functions/dwelling/create/create.index
