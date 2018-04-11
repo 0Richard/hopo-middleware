@@ -133,11 +133,14 @@ function convertItemToSuggest (item, table, text) {
 
   Object.keys(item).forEach(function (key) {
     var value = item[key]
-    var searchable = SEARCH_FIELDS.indexOf((table + '_' + key).toLowerCase()) > -1
 
-    if (!matchingField && searchable && value.toLowerCase().indexOf(text.toLowerCase()) >= 0) {
-      matchingField = key
-      matchingValue = getMatchingValue(value, text)
+    if (value) {
+      var searchable = SEARCH_FIELDS.indexOf((table + '_' + key).toLowerCase()) > -1
+
+      if (!matchingField && searchable && value.toLowerCase().indexOf(text.toLowerCase()) >= 0) {
+        matchingField = key
+        matchingValue = getMatchingValue(value, text)
+      }
     }
   })
 
