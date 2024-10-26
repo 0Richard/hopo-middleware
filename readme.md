@@ -35,12 +35,67 @@ Modernization Suggestions:
 
 Consider replacing:
 
-bluebird with native Promises
-moment with date-fns or native Date methods
-underscore with native array methods or lodash
-request (deprecated) with axios or node-fetch
+1. bluebird with native Promises - NOT NEEDED use native
+2. moment with date-fns or native Date methods - NOT NEEDED use native
+3. underscore with native array methods or lodash - NOT NEEDED use native 
+4. request (deprecated) with axios or node-fetch - Use Axios
+
+##### Existing packages
+```javascript
+const AWS = require('aws-sdk')
+//const Promise = require('bluebird') NOT REQUIRED
+//const u = require('underscore')
+const lib = require('../../../lib')
+```
+
+##### Replace with:
+```javascript
+import AWS from 'aws-sdk';
+import axios from 'axios';
+import lib from '../../../lib';
+```
+#### Other packages to use
+```javascript
+import axios from "axios";
+import axiosRetry from 'axios-retry';
+import crypto from "crypto";
+import * as dotenv from 'dotenv';
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+import { send } from "../utils/sqs.js"; // TODO: #7 sqs util needs a name
+import { v4 as uuidv4 } from "uuid";
 
 
+
+import { DynamoDBClient, QueryCommand, UpdateItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import {
+  createItemInDynamoDB,
+  updateItemInDynamoDB,
+  queryItemsFromDynamoDB,
+  getItemFromDynamoDB,
+} from "../utils/305_fnd_dbAccess_wp.js";
+import {
+  getSecret,
+} from "../utils/315_fnd_secretsAccess_wp.js";
+import { Logger } from "../utils/320_fnu_logHandler_wp.js";
+import { getEnvVars } from "../utils/350_fnu_environmentVariables_wp.js";
+
+```
+
+##### NPM Installs for the above packages
+```javascript
+npm install axios
+npm install axios-retry
+npm install dotenv
+npm install @aws-sdk/util-dynamodb
+npm install uuid
+npm install @aws-sdk/client-dynamodb
+npm install --save-dev jsdoc
+```
+
+##### Or as a single command
+```javascript
+npm install axios axios-retry dotenv @aws-sdk/util-dynamodb uuid @aws-sdk/client-dynamodb --save-dev jsdoc
+```
 
 
 #### Environment Variables:
