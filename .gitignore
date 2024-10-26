@@ -1,0 +1,9 @@
+node_modules
+.serverless
+.localstack
+.webpack
+.env*
+!*.env.example
+!*.env.local.example
+openapi-integration
+.DS_Store
