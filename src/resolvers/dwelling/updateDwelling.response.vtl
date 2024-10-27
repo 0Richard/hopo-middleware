@@ -1,0 +1,4 @@
+#if(!$ctx.result)
+  $util.error("Dwelling not found", "NotFound")
+#end
+$util.toJson($ctx.result)

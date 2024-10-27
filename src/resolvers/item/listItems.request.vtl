@@ -1,0 +1,31 @@
+{
+  "version": "2018-05-29",
+  "operation": "Query",
+  "query": {
+    "expression": "PK = :pk AND begins_with(SK, :sk)",
+    "expressionValues": {
+      ":pk": { "S": "SUB#$context.identity.sub" },
+      ":sk": { "S": "ITEM#" }
+    }
+  }
+  #if($ctx.args.room_id)
+    ,"filter": {
+      "expression": "room_id = :room_id",
+      "expressionValues": {
+        ":room_id": { "S": "$ctx.args.room_id" }
+      }
+    }
+  #end
+  #if($ctx.args.filter)
+    #if($ctx.args.filter.priceRange)
+      ,"expression": "price.amount BETWEEN :min AND :max",
+      "expressionValues": {
+        ":min": { "N": "$ctx.args.filter.priceRange.min" },
+        ":max": { "N": "$ctx.args.filter.priceRange.max" }
+      }
+    #end
+  #end
+  #if($ctx.args.sort)
+    ,"scanIndexForward": #if($ctx.args.sort.direction == "DESC") false #else true #end
+  #end
+}

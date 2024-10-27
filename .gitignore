@@ -1,9 +1,36 @@
+# Dependencies
 node_modules
+package-lock.json
+
+# Build & Deployment
+.webpack
 .serverless
 .localstack
-.webpack
+dist
+
+# Environment
 .env*
 !*.env.example
 !*.env.local.example
+
+# OpenAPI
 openapi-integration
+
+# IDE
+.idea
+.vscode
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Test coverage
+coverage
+
+# Temporary files
+tmp
+.tmp

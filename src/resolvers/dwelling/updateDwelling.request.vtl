@@ -1,0 +1,41 @@
+{
+  "version": "2018-05-29",
+  "operation": "UpdateItem",
+  "key": {
+    "PK": { "S": "SUB#$context.identity.sub" },
+    "SK": { "S": "DWELLING#$ctx.args.id" }
+  },
+  "update": {
+    "expression": "SET #updated = :updated",
+    "expressionNames": {
+      "#updated": "updated"
+    },
+    "expressionValues": {
+      ":updated": { "S": "$util.time.nowISO8601()" }
+    }
+  }
+  #if($ctx.args.input.name)
+    #set($expression = $expression + ", #name = :name")
+    #set($expressionNames.put("#name", "name"))
+    #set($expressionValues.put(":name", { "S": "$ctx.args.input.name" }))
+  #end
+  #if($ctx.args.input.dwellingType)
+    #set($expression = $expression + ", #type = :type")
+    #set($expressionNames.put("#type", "dwellingType"))
+    #set($expressionValues.put(":type", { "S": "$ctx.args.input.dwellingType" }))
+  #end
+  #if($ctx.args.input.address)
+    #set($expression = $expression + ", #address = :address")
+    #set($expressionNames.put("#address", "address"))
+    #set($expressionValues.put(":address", $util.dynamodb.toDynamoDBJson($ctx.args.input.address)))
+  #end,
+  "condition": {
+    "expression": "attribute_exists(PK) AND #sub_id = :sub_id",
+    "expressionNames": {
+      "#sub_id": "sub_id"
+    },
+    "expressionValues": {
+      ":sub_id": { "S": "$context.identity.sub" }
+    }
+  }
+}

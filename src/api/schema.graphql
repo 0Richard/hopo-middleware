@@ -1,18 +1,18 @@
-type Dwelling {
+type Dwelling @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
   id: ID!
   sub_id: ID!
   name: String!
   address: Address!
   dwellingType: String!
-  created: String!
-  updated: String
-  rooms: [Room!]
+  created: AWSDateTime!
+  updated: AWSDateTime
+  rooms: [Room!] @hasMany(indexName: "byDwelling", fields: ["id"])
   totalRooms: Int!
   totalItems: Int!
   totalValue: Float!
 }
 
-type Room {
+type Room @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
   id: ID!
   dwelling_id: ID!
   sub_id: ID!
@@ -20,14 +20,14 @@ type Room {
   roomType: String!
   imageUrl: String
   thumbnailUrl: String
-  created: String!
-  updated: String
-  items: [Item!]
+  created: AWSDateTime!
+  updated: AWSDateTime
+  items: [Item!] @hasMany(indexName: "byRoom", fields: ["id"])
   itemCount: Int!
   totalValue: Float!
 }
 
-type Item {
+type Item @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
   id: ID!
   room_id: ID!
   sub_id: ID!
@@ -37,8 +37,8 @@ type Item {
   price: Price!
   quantity: Int!
   retailer: String
-  created: String!
-  updated: String
+  created: AWSDateTime!
+  updated: AWSDateTime
 }
 
 type Address {
@@ -157,36 +157,41 @@ enum SortDirection {
 
 type Query {
   # Dwelling Queries
-  dwelling(id: ID!): Dwelling
-  dwellings(filter: DwellingFilter, sort: SortInput): [Dwelling!]!
-  myDwelling: Dwelling
+  getDwelling(id: ID!): Dwelling @aws_auth
+  listDwellings(filter: DwellingFilter, sort: SortInput): [Dwelling!]! @aws_auth
+  getMyDwelling: Dwelling @aws_auth
   
   # Room Queries
-  room(id: ID!): Room
-  rooms(dwelling_id: ID!, filter: RoomFilter, sort: SortInput): [Room!]!
+  getRoom(id: ID!): Room @aws_auth
+  listRooms(dwelling_id: ID!, filter: RoomFilter, sort: SortInput): [Room!]! @aws_auth
   
   # Item Queries
-  item(id: ID!): Item
-  items(room_id: ID!, filter: ItemFilter, sort: SortInput): [Item!]!
+  getItem(id: ID!): Item @aws_auth
+  listItems(room_id: ID!, filter: ItemFilter, sort: SortInput): [Item!]! @aws_auth
   
   # Search
-  search(term: String!, entityType: String): SearchResult!
+  search(term: String!, entityType: String): SearchResult! @aws_auth
 }
 
 type Mutation {
   # Dwelling Mutations
-  createDwelling(input: CreateDwellingInput!): Dwelling!
-  updateDwelling(id: ID!, input: UpdateDwellingInput!): Dwelling!
-  deleteDwelling(id: ID!): Boolean!
+  createDwelling(input: CreateDwellingInput!): Dwelling! @aws_auth
+  updateDwelling(id: ID!, input: UpdateDwellingInput!): Dwelling! @aws_auth
+  deleteDwelling(id: ID!): Boolean! @aws_auth
   
   # Room Mutations
-  createRoom(input: CreateRoomInput!): Room!
-  updateRoom(id: ID!, input: UpdateRoomInput!): Room!
-  deleteRoom(id: ID!): Boolean!
-  uploadRoomImage(id: ID!, file: Upload!): Room!
+  createRoom(input: CreateRoomInput!): Room! @aws_auth
+  updateRoom(id: ID!, input: UpdateRoomInput!): Room! @aws_auth
+  deleteRoom(id: ID!): Boolean! @aws_auth
+  uploadRoomImage(id: ID!, file: Upload!): Room! @aws_auth
   
   # Item Mutations
-  createItem(input: CreateItemInput!): Item!
-  updateItem(id: ID!, input: UpdateItemInput!): Item!
-  deleteItem(id: ID!): Boolean!
+  createItem(input: CreateItemInput!): Item! @aws_auth
+  updateItem(id: ID!, input: UpdateItemInput!): Item! @aws_auth
+  deleteItem(id: ID!): Boolean! @aws_auth
+}
+
+schema {
+  query: Query
+  mutation: Mutation
 }

@@ -1,0 +1,33 @@
+{
+  "version": "2018-05-29",
+  "operation": "Query",
+  "query": {
+    "expression": "PK = :pk AND begins_with(SK, :sk)",
+    "expressionValues": {
+      ":pk": { "S": "SUB#$context.identity.sub" },
+      ":sk": { "S": "ROOM#" }
+    }
+  }
+  #if($ctx.args.dwelling_id)
+    ,"filter": {
+      "expression": "dwelling_id = :dwelling_id",
+      "expressionValues": {
+        ":dwelling_id": { "S": "$ctx.args.dwelling_id" }
+      }
+    }
+  #end
+  #if($ctx.args.filter)
+    #if($ctx.args.filter.type)
+      ,"expression": "#type = :type",
+      "expressionNames": {
+        "#type": "roomType"
+      },
+      "expressionValues": {
+        ":type": { "S": "$ctx.args.filter.type" }
+      }
+    #end
+  #end
+  #if($ctx.args.sort)
+    ,"scanIndexForward": #if($ctx.args.sort.direction == "DESC") false #else true #end
+  #end
+}

@@ -1,0 +1,24 @@
+- name: getDwellingFunction
+  dataSource: DynamoDBDataSource
+  request: js/functions/getDwelling.request.js
+  response: js/functions/getDwelling.response.js
+
+- name: aggregateDataFunction
+  dataSource: DynamoDBDataSource
+  request: js/functions/aggregateData.request.js
+  response: js/functions/aggregateData.response.js
+
+- name: searchFunction
+  dataSource: DynamoDBDataSource
+  request: js/functions/search.request.js
+  response: js/functions/search.response.js
+
+- name: validateRoomFunction
+  dataSource: DynamoDBDataSource
+  request: js/functions/validateRoom.request.js
+  response: js/functions/validateRoom.response.js
+
+- name: uploadImageFunction
+  dataSource: NoneDataSource
+  request: js/functions/uploadImage.request.js
+  response: js/functions/uploadImage.response.js

@@ -1,0 +1,23 @@
+#set($id = $util.autoId())
+{
+  "version": "2018-05-29",
+  "operation": "PutItem",
+  "key": {
+    "PK": { "S": "SUB#$context.identity.sub" },
+    "SK": { "S": "ITEM#$id" }
+  },
+  "attributeValues": {
+    "id": { "S": "$id" },
+    "sub_id": { "S": "$context.identity.sub" },
+    "room_id": { "S": "$ctx.args.input.room_id" },
+    "type": { "S": "item" },
+    "name": { "S": "$ctx.args.input.name" },
+    "description": #if($ctx.args.input.description) { "S": "$ctx.args.input.description" } #else $util.toJson($null) #end,
+    "details": $util.dynamodb.toDynamoDBJson($ctx.args.input.details),
+    "price": $util.dynamodb.toDynamoDBJson($ctx.args.input.price),
+    "quantity": { "N": "$ctx.args.input.quantity" },
+    "retailer": #if($ctx.args.input.retailer) { "S": "$ctx.args.input.retailer" } #else $util.toJson($null) #end,
+    "created": { "S": "$util.time.nowISO8601()" },
+    "updated": { "S": "$util.time.nowISO8601()" }
+  }
+}

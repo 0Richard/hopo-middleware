@@ -1,6 +1,9 @@
 # Welcome to hopo-middleware Read Me
 
 
+NOTE NOTE NOTE this is now out of date.
+
+
 ### Claude Review Recommendations
 #### Runtime & Dependencies:
 You're using nodejs6.10 which is very outdated and has reached end-of-life. You should upgrade to at least Node.js 18.x (current AWS Lambda LTS version).

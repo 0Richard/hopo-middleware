@@ -1,0 +1,7 @@
+#if(!$ctx.result)
+  $util.error("Item not found", "NotFound")
+#end
+#if($ctx.result.sub_id != $context.identity.sub)
+  $util.unauthorized()
+#end
+$util.toJson($ctx.result)

@@ -1,0 +1,17 @@
+{
+  "version": "2018-05-29",
+  "operation": "DeleteItem",
+  "key": {
+    "PK": { "S": "SUB#$context.identity.sub" },
+    "SK": { "S": "DWELLING#$ctx.args.id" }
+  },
+  "condition": {
+    "expression": "attribute_exists(PK) AND #sub_id = :sub_id",
+    "expressionNames": {
+      "#sub_id": "sub_id"
+    },
+    "expressionValues": {
+      ":sub_id": { "S": "$context.identity.sub" }
+    }
+  }
+}

@@ -1,166 +1,132 @@
-service: ${env:SERVICE_NAME, 'green-dwelling'}
+service: hopo
 
 provider:
   name: aws
   runtime: nodejs18.x
-  memorySize: ${env:LAMBDA_MEMORY, 512}
-  timeout: ${env:LAMBDA_TIMEOUT, 60}
+  region: ${opt:region, env:AWS_REGION, 'eu-west-2'}
   stage: ${opt:stage, env:STAGE, 'dev'}
-  region: ${env:AWS_REGION, 'eu-west-2'}
-  profile: ${env:AWS_PROFILE, 'default'}
   environment:
     REGION: ${self:provider.region}
     STAGE: ${self:provider.stage}
-    # Cognito Configuration
-    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
-    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
-    # DynamoDB Tables
-    DDB_TABLE_DWELLING: ${env:DDB_TABLE_DWELLING}
-    DDB_TABLE_ROOM: ${env:DDB_TABLE_ROOM}
-    DDB_TABLE_ITEM: ${env:DDB_TABLE_ITEM}
-    # S3 Configuration
-    IMAGE_BUCKET: ${env:IMAGE_BUCKET}
-    RAW_IMAGE_PREFIX: ${env:RAW_IMAGE_PREFIX, 'image'}
-    THUMBNAIL_PREFIX: ${env:THUMBNAIL_PREFIX, 'thumbnail'}
-    OLD_IMAGE_PREFIX: ${env:OLD_IMAGE_PREFIX, 'oldImage'}
-    # Thumbnail Settings
-    TMB_WIDTH: ${env:TMB_WIDTH, 150}
-    TMB_HEIGHT: ${env:TMB_HEIGHT, 150}
-    TMB_QUALITY: ${env:TMB_QUALITY, 50}
-    # CloudSearch Configuration
-    CS_REGION: ${env:CS_REGION, 'eu-west-1'}
-    CS_SEARCH_ENDPOINT: ${env:CS_SEARCH_ENDPOINT}
-    CS_DOC_ENDPOINT: ${env:CS_DOC_ENDPOINT}
-    CS_SEARCH_SIZE: ${env:CS_SEARCH_SIZE, 10}
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+    IMAGE_BUCKET: ${self:service}-images-${self:provider.stage}
+    THUMBNAIL_WIDTH: ${env:THUMBNAIL_WIDTH, 150}
+    THUMBNAIL_HEIGHT: ${env:THUMBNAIL_HEIGHT, 150}
+    THUMBNAIL_QUALITY: ${env:THUMBNAIL_QUALITY, 80}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: 
+            - !GetAtt DynamodbTable.Arn
+            - !Join ['', [!GetAtt DynamodbTable.Arn, '/index/*']]
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+            - s3:DeleteObject
+          Resource: !Join ['', [!GetAtt ImageBucket.Arn, '/*']]
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminInitiateAuth
+            - cognito-idp:AdminRespondToAuthChallenge
+          Resource: !GetAtt CognitoUserPool.Arn
+
+plugins:
+  - serverless-appsync-plugin
+  - serverless-dotenv-plugin
+  - serverless-offline
+  - serverless-webpack
 
 custom:
-  apiGateway:
-    restApiId: !Ref ApiGatewayRestApi
-    restApiRootResourceId: !GetAtt ApiGatewayRestApi.RootResourceId
+  webpack:
+    webpackConfig: webpack.config.js
+    includeModules: true
+    packager: 'npm'
+    
+  appSync:
+    name: ${self:service}-${self:provider.stage}
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      userPoolId: !Ref CognitoUserPool
+      defaultAction: ALLOW
+    schema: src/schema.gql
+    mappingTemplatesLocation: src/resolvers
+    mappingTemplates: ${file(src/resources/mapping-templates.yml)}
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: DynamoDBDataSource
+        config:
+          tableName: !Ref DynamodbTable
+      - type: AWS_LAMBDA
+        name: ImageProcessorDataSource
+        config:
+          functionName: imageProcessor
+      - type: NONE
+        name: NoneDataSource
+
 
 functions:
+  # JS Resolver Lambdas
+  getMyDwelling:
+    handler: src/resolvers/dwelling/js-dwelling-resolvers.handler
+    events:
+      - http:
+          path: dwelling/my
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref ApiGatewayAuthorizer
+
   search:
-    handler: functions/search/search.index
-    name: ${self:provider.stage}-greenSearch
-    role: defaultRole
-    
-  search-suggest:
-    handler: functions/search/suggest.index
-    name: ${self:provider.stage}-greenSearchSuggest
-    role: defaultRole
-    
-  user-login:
-    handler: functions/user/login/login.index
-    name: ${self:provider.stage}-greenUserLogin
-    role: defaultRole
-    
-  user-refresh:
-    handler: functions/user/refresh/refresh.index
-    name: ${self:provider.stage}-greenUserRefresh
-    role: defaultRole
-    
-  dwelling-create:
-    handler: functions/dwelling/create/create.index
-    name: ${self:provider.stage}-greenDwellingCreate
-    role: defaultRole
-    
-  dwelling-update:
-    handler: functions/dwelling/update/update.index
-    name: ${self:provider.stage}-greenDwellingUpdate
-    role: defaultRole
-    
-  dwelling-delete:
-    handler: functions/dwelling/delete/delete.index
-    name: ${self:provider.stage}-greenDwellingDelete
-    role: defaultRole
-    
-  dwelling-get:
-    handler: functions/dwelling/get/get.index
-    name: ${self:provider.stage}-greenDwellingGet
-    role: defaultRole
-    
-  dwelling-list:
-    handler: functions/dwelling/list/list.index
-    name: ${self:provider.stage}-greenDwellingList
-    role: defaultRole
-    
-  room-create:
-    handler: functions/room/create/create.index
-    name: ${self:provider.stage}-greenRoomCreate
-    role: defaultRole
-    
-  room-list:
-    handler: functions/room/list/list.index
-    name: ${self:provider.stage}-greenRoomList
-    role: defaultRole
-    
-  item-create:
-    handler: functions/item/create/create.index
-    name: ${self:provider.stage}-greenItemCreate
-    role: defaultRole
-    
-  item-list:
-    handler: functions/item/list/list.index
-    name: ${self:provider.stage}-greenItemList
-    role: defaultRole
+    handler: src/resolvers/js-search-resolver.handler
+    events:
+      - http:
+          path: search
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref ApiGatewayAuthorizer
+
+  uploadRoomImage:
+    handler: src/resolvers/room/js-room-image-resolver.handler
+    events:
+      - http:
+          path: room/image
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref ApiGatewayAuthorizer
+
+  # Image Processing
+  imageProcessor:
+    handler: src/functions/imageProcessor.handler
+    events:
+      - s3:
+          bucket: ${self:provider.environment.IMAGE_BUCKET}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploads/
+            - suffix: .jpg
 
 resources:
-  Resources:
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: ${self:service}-${self:provider.stage}
-        Body: ${file(api-spec.yml)}
-    
-    defaultRole:
-      Type: AWS::IAM::Role
-      Properties:
-        Path: '/'
-        RoleName: ${self:provider.stage}-DwellingAPILambdaDefaultRole
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        Policies:
-          - PolicyName: ${self:provider.stage}-DwellingLambdaDefaultPolicy
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: 'arn:aws:logs:${self:provider.region}:*:*'
-                - Effect: 'Allow'
-                  Action:
-                    - 'cloudsearch:search'
-                    - 'cloudsearch:suggest'
-                  Resource: 'arn:aws:cloudsearch:${self:provider.region}:*:domain/*'
-                - Effect: 'Allow'
-                  Action:
-                    - 'cognito-idp:AdminInitiateAuth'
-                    - 'cognito-idp:AdminRespondToAuthChallenge'
-                  Resource: 'arn:aws:cognito-idp:${self:provider.region}:*:userpool/${self:provider.environment.COGNITO_USER_POOL_ID}'
-                - Effect: 'Allow'
-                  Action:
-                    - 'dynamodb:GetItem'
-                    - 'dynamodb:PutItem'
-                    - 'dynamodb:UpdateItem'
-                    - 'dynamodb:DeleteItem'
-                    - 'dynamodb:Query'
-                    - 'dynamodb:Scan'
-                  Resource:
-                    - 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DDB_TABLE_DWELLING}'
-                    - 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DDB_TABLE_ROOM}'
-                    - 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DDB_TABLE_ITEM}'
-                - Effect: 'Allow'
-                  Action:
-                    - 's3:GetObject'
-                    - 's3:PutObject'
-                    - 's3:DeleteObject'
-                  Resource: 'arn:aws:s3:::${self:provider.environment.IMAGE_BUCKET}/*'
+  - ${file(src/resources/dynamodb.yml)}
+  - ${file(src/resources/cognito.yml)}
+  - ${file(src/resources/s3.yml)}
+
+  Outputs:
+    AppSyncApiUrl:
+      Value: !GetAtt GraphQLApi.GraphQLUrl
+    AppSyncApiId:
+      Value: !GetAtt GraphQLApi.ApiId
+    UserPoolId:
+      Value: !Ref CognitoUserPool
+    UserPoolClientId:
+      Value: !Ref CognitoUserPoolClient
