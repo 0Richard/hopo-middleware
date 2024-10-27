@@ -15,7 +15,6 @@ Several dependencies using "latest" version which is risky for production:
 
 
 #### Security:
-
 Your IAM role has very broad permissions (*) for several services. Consider restricting them to specific resources:
 
 - cloudsearch:*
@@ -101,6 +100,277 @@ npm install axios axios-retry dotenv @aws-sdk/util-dynamodb uuid @aws-sdk/client
 #### Environment Variables:
 - Good organization of configuration
 - Consider using AWS Systems Manager Parameter Store for sensitive values
+
+
+#### SDLC:
+
+###### Existing Database Tables
+
+```json
+{
+ "dwellingId": "2ee27c70-f5ff-11e7-9fa8-9b57e8cfe7bb",
+ "addressLine1": "51 Queen Anne Street",
+ "addressLine2": "London",
+ "city": "London",
+ "created": "2018-01-10T12:10:01.016Z",
+ "deletedFlag": 0,
+ "dwellingName": "Outlook",
+ "dwellingRooms": 1,
+ "dwellingType": "House",
+ "identityId": "richardbelluk@outlook.com",
+ "postCode": "SW1 2NB",
+ "updated": "2018-04-10T14:34:39.625Z"
+}
+```
+
+```json
+{
+ "roomId": "998a7a60-f4a5-11e7-a21f-0d367e20621a",
+ "created": "2018-01-08T18:56:14.086Z",
+ "deletedFlag": 0,
+ "dwellingId": "986b9ce0-f4a5-11e7-aadd-17fbae39437b",
+ "identityId": "shahzaib.shahid912@gmail.com",
+ "roomImage": "shahzaib.shahid912@gmail.com_998a7a60-f4a5-11e7-a21f-0d367e20621a_roomImage_2018-01-30T17:40:15.376Z_img",
+ "roomName": "Bedroom",
+ "roomType": "Bedroom",
+ "updated": "2018-01-30T17:40:15.376Z"
+}
+```
+
+```json
+{
+ "itemId": "097e4b80-447e-11e8-afce-e583e9b0d13f",
+ "brand": "LG",
+ "created": "2018-04-20T09:34:35.064Z",
+ "deletedFlag": 0,
+ "description": "Television",
+ "identityId": "richardgoemaat@gmail.com",
+ "model": "HD",
+ "price": 250,
+ "priceCurrency": "£",
+ "quantity": 1,
+ "retailer": "Richer Sounds",
+ "roomId": "1d2e54a0-4478-11e8-8689-052c1b07e549",
+ "serialNumber": "hgsjhgdsalhd887987239372",
+ "updated": "2018-04-20T09:34:35.064Z"
+}
+```
+
+##### Existing Services
+
+CRUD services are needed on all entities - DWELLING, ROOM, ITEM, these include:
+- batch-create
+- create
+- read
+- update
+- delete
+
+Other services needed:
+1. get-self  
+  - Gets the user's identity (sub_id) from Cognito token
+  - Finds the user's dwelling
+  - Enriches the dwelling data with:
+    - Room count
+    - Total item count
+    - Total cost of items
+    - Currency of items
+
+2. room/thumbnail.js
+   - S3 bucket for images
+   - Environment variables for thumbnail specs (width, height, quality)
+   - IAM permissions for S3 read/write
+   - Database table field for image URLs
+
+3. LISTS
+  1. LIST DWELLINGS
+     1. Input:
+        - sub_id (for standard users)
+        - isAdmin flag (for admin to see all)
+      2. Output:
+        - dwelling details
+        - count of rooms
+        - total items
+        - total value
+  2. LIST ROOMs
+        1. Input:
+        - dwelling_id (required)
+        - sub_id (for validation)
+        1. Optional Input:
+        - sort (by name, type)
+        1. Output:
+        - room details
+        - count of items per room
+        - value of items per room
+  3. LIST ITEMS
+        1. Input:
+        - room_id (required)
+        - sub_id (for validation)
+        1. Optional Input:
+        - sort (by name, price, date)
+        - filter (by type, price range)
+        1. Output:
+        - item details
+        - total value for filtered items
+  4. Search All
+        1. Input:
+        - sub_id (for scope)
+        - search_term
+        - entity_type (optional: 'dwelling', 'room', 'item')
+        1. Optional Input:
+        - price_range
+        - date_range
+        1. Output:
+        - matching entities with type indicator
+        - grouped by entity type
+
+
+| Ref  | Path / Filename                               |
+| :--- | :-------------------------------------------- |
+|      |                                               |
+|      | ./handlers/dwelling/create/batch-create.js    |
+|      | ./handlers/dwelling/create/create.js          |
+|      | ./handlers/dwelling/delete/delete.js          |
+|      | ./handlers/dwelling/get/get-self.js           |
+|      | ./handlers/dwelling/get/get.js                |
+|      | ./handlers/dwelling/list/list.js              |
+|      | ./handlers/dwelling/update/update.js          |
+| ---  | ----                                          |
+|      | ./handlers/item/create/batch-create.js        |
+|      | ./handlers/item/create/create.js              |
+|      | ./handlers/item/delete/delete.js              |
+|      | ./handlers/item/get/get.js                    |
+|      | ./handlers/item/list/list.js                  |
+|      | ./handlers/item/update/update.js              |
+| ---  | ----                                          |
+|      | ./handlers/room/create/batch-create.js        |
+|      | ./handlers/room/create/create.js              |
+|      | ./handlers/room/delete/delete.js              |
+|      | ./handlers/room/get/get.js                    |
+|      | ./handlers/room/list/list.js                  |
+|      | ./handlers/room/thumbnail/thumbnail.js        |
+|      | ./handlers/room/update/update.js              |
+| ---  | ----                                          |
+|      | ./handlers/search/search.js                   |
+|      | ./handlers/search/stream.js                   |
+|      | ./handlers/search/suggest.js                  |
+| ---  | ----                                          |
+|      | ./handlers/test/clear-user-data.js            |
+|      | ./handlers/test/create-test-data.js           |
+|      | ./handlers/test/get-or-create.js              |
+| ---  | ----                                          |
+|      | ./handlers/user/login                         |
+|      | ./handlers/user/refresh                       |
+|      | ./handlers/user/login/login.js                |
+|      | ./handlers/user/refresh/invalidate-refresh.js |
+|      | ./handlers/user/refresh/refresh.js            |
+| ---  | ----                                          |
+|      | ./utils/305_fnd_dbAccess_wp.js                |
+|      | ./utils/315_fnd_secretsAccess_wp.js           |
+|      | ./utils/320_fnu_logHandler_wp.js              |
+|      | ./utils/350_fnu_environmentVariables_wp.js    |
+| ---  | ----                                          |
+|      | ./utils/lib/Callbacker.js                     |
+|      | ./utils/lib/index.js                          |
+
+
+##### New Proposed Services and Data Structure
+
+###### Data Structure:
+```json
+// Dwelling record
+{
+  "PK": "SUB#123e4567-e89b-12d3-a456-426614174000",
+  "SK": "DWELLING#2ee27c70-f5ff-11e7-9fa8-9b57e8cfe7bb",
+  "type": "dwelling",
+  "dwellingId": "2ee27c70-f5ff-11e7-9fa8-9b57e8cfe7bb",
+  "sub_id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "Outlook",
+  "address": {
+    "line1": "51 Queen Anne Street",
+    "line2": "London",
+    "city": "London",
+    "postCode": "SW1 2NB"
+  },
+  "roomCount": 1,
+  "dwellingType": "House",
+  "created": "2018-01-10T12:10:01.016Z",
+  "updated": "2018-04-10T14:34:39.625Z"
+}
+
+// Room record
+{
+  "PK": "SUB#123e4567-e89b-12d3-a456-426614174000",
+  "SK": "ROOM#998a7a60-f4a5-11e7-a21f-0d367e20621a",
+  "type": "room",
+  "roomId": "998a7a60-f4a5-11e7-a21f-0d367e20621a",
+  "dwellingId": "2ee27c70-f5ff-11e7-9fa8-9b57e8cfe7bb",
+  "sub_id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "Bedroom",
+  "roomType": "Bedroom",
+  "imageUrl": "room_998a7a60-f4a5-11e7-a21f-0d367e20621a.jpg",
+  "created": "2018-01-08T18:56:14.086Z",
+  "updated": "2018-01-30T17:40:15.376Z"
+}
+
+// Item record
+{
+  "PK": "SUB#123e4567-e89b-12d3-a456-426614174000",
+  "SK": "ITEM#097e4b80-447e-11e8-afce-e583e9b0d13f",
+  "type": "item",
+  "itemId": "097e4b80-447e-11e8-afce-e583e9b0d13f",
+  "roomId": "1d2e54a0-4478-11e8-8689-052c1b07e549",
+  "sub_id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "Television",
+  "details": {
+    "brand": "LG",
+    "model": "HD",
+    "serialNumber": "hgsjhgdsalhd887987239372"
+  },
+  "price": {
+    "amount": 250,
+    "currency": "GBP"
+  },
+  "quantity": 1,
+  "retailer": "Richer Sounds",
+  "created": "2018-04-20T09:34:35.064Z",
+  "updated": "2018-04-20T09:34:35.064Z"
+}
+
+```
+
+###### Services:
+```bash
+/src
+  /utils
+    data.js                # DynamoDB operations
+    secrets.js             # AWS Secrets Manager
+    environment.js         # Environment vars
+    responses.js          # HTTP responses
+    validation.js         # Input validation
+    imageProcessor.js     # Image handling    
+  /services
+    /dwelling
+      handler.js          # Single handler for all dwelling CRUD
+    /room
+      handler.js          # Single handler for all room CRUD
+      process-image.js    # Image processing (separate due to S3 trigger)    
+    /item
+      handler.js          # Single handler for all item CRUD
+    /search
+      handler.js          # Global search functionality
+    /user
+      get-self.js        # User-specific operations
+    /services
+    /list
+      handler.js         #(Single consolidated list service for ADMIN)
+```
+
+
+
+
+
+
+
 
 # Taken From FDZ
 ## API (API Gateway)
