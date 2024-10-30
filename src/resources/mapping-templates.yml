@@ -1,108 +1,27 @@
-mappingTemplates:
-  # Dwelling VTL Resolvers
-  - type: Query
-    field: getDwelling
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/dwelling/getDwelling.request.vtl
-    response: ../resolvers/dwelling/getDwelling.response.vtl
+# VTL Resolvers for CRUD Operations
+- type: Query
+  field: getDwelling
+  dataSource: DynamoDBDataSource
+  request: dwelling/getDwelling.request.vtl
+  response: dwelling/getDwelling.response.vtl
 
-  - type: Query
-    field: listDwellings
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/dwelling/listDwellings.request.vtl
-    response: ../resolvers/dwelling/listDwellings.response.vtl
+# ... other VTL resolvers ...
 
-  - type: Mutation
-    field: createDwelling
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/dwelling/createDwelling.request.vtl
-    response: ../resolvers/dwelling/createDwelling.response.vtl
+# JavaScript Resolvers
+- type: Query
+  field: getMyDwelling
+  dataSource: DynamoDBDataSource
+  request: dwelling/js-dwelling-resolvers.js
+  response: dwelling/js-dwelling-resolvers.js
 
-  - type: Mutation
-    field: updateDwelling
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/dwelling/updateDwelling.request.vtl
-    response: ../resolvers/dwelling/updateDwelling.response.vtl
+- type: Query
+  field: search
+  dataSource: DynamoDBDataSource
+  request: js-search-resolver.js
+  response: js-search-resolver.js
 
-  - type: Mutation
-    field: deleteDwelling
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/dwelling/deleteDwelling.request.vtl
-    response: ../resolvers/dwelling/deleteDwelling.response.vtl
-
-  # Room VTL Resolvers
-  - type: Query
-    field: getRoom
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/room/getRoom.request.vtl
-    response: ../resolvers/room/getRoom.response.vtl
-
-  - type: Query
-    field: listRooms
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/room/listRooms.request.vtl
-    response: ../resolvers/room/listRooms.response.vtl
-
-  - type: Mutation
-    field: createRoom
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/room/createRoom.request.vtl
-    response: ../resolvers/room/createRoom.response.vtl
-
-  # Item VTL Resolvers
-  - type: Query
-    field: getItem
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/item/getItem.request.vtl
-    response: ../resolvers/item/getItem.response.vtl
-
-  - type: Query
-    field: listItems
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/item/listItems.request.vtl
-    response: ../resolvers/item/listItems.response.vtl
-
-  - type: Mutation
-    field: createItem
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/item/createItem.request.vtl
-    response: ../resolvers/item/createItem.response.vtl
-
-  # JS Complex Resolvers
-  - type: Query
-    field: getMyDwelling
-    kind: PIPELINE
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/dwelling/js-dwelling-resolvers.js
-    response: ../resolvers/dwelling/js-dwelling-resolvers.js
-
-  - type: Query
-    field: search
-    kind: PIPELINE
-    dataSource: DynamoDBDataSource
-    request: ../resolvers/js-search-resolver.js
-    response: ../resolvers/js-search-resolver.js
-
-  - type: Mutation
-    field: uploadRoomImage
-    kind: PIPELINE
-    dataSource: NoneDataSource
-    request: ../resolvers/room/js-room-image-resolver.js
-    response: ../resolvers/room/js-room-image-resolver.js
-
-functionConfigurations:
-  # Pipeline Functions for JS Resolvers
-  - dataSource: DynamoDBDataSource
-    name: DwellingFunction
-    request: ../resolvers/dwelling/js-dwelling-resolvers.js
-    response: ../resolvers/dwelling/js-dwelling-resolvers.js
-
-  - dataSource: DynamoDBDataSource
-    name: SearchFunction
-    request: ../resolvers/js-search-resolver.js
-    response: ../resolvers/js-search-resolver.js
-
-  - dataSource: NoneDataSource
-    name: ImageProcessorFunction
-    request: ../resolvers/room/js-room-image-resolver.js
-    response: ../resolvers/room/js-room-image-resolver.js
+- type: Mutation
+  field: uploadRoomImage
+  dataSource: NoneDataSource
+  request: room/js-room-image-resolver.js
+  response: room/js-room-image-resolver.js

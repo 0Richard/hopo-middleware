@@ -9,7 +9,9 @@
     "remove": "serverless remove",
     "lint": "eslint .",
     "test": "jest",
-    "start:local": "serverless offline start"
+    "start:local": "serverless offline start",
+    "start:api": "serverless offline --httpPort 4000",
+    "start:appsync": "serverless appsync start-api --port 4001"
   },
   "dependencies": {
     "@aws-appsync/utils": "^1.9.0",

@@ -1,24 +1,24 @@
-- name: getDwellingFunction
+# src/resources/function-configurations.yml
+getMyDwelling:
+  handler: src/resolvers/dwelling/js-dwelling-resolvers.js
   dataSource: DynamoDBDataSource
-  request: js/functions/getDwelling.request.js
-  response: js/functions/getDwelling.response.js
 
-- name: aggregateDataFunction
+search:
+  handler: src/resolvers/js-search-resolver.js
   dataSource: DynamoDBDataSource
-  request: js/functions/aggregateData.request.js
-  response: js/functions/aggregateData.response.js
 
-- name: searchFunction
-  dataSource: DynamoDBDataSource
-  request: js/functions/search.request.js
-  response: js/functions/search.response.js
-
-- name: validateRoomFunction
-  dataSource: DynamoDBDataSource
-  request: js/functions/validateRoom.request.js
-  response: js/functions/validateRoom.response.js
-
-- name: uploadImageFunction
+uploadRoomImage:
+  handler: src/resolvers/room/js-room-image-resolver.js
   dataSource: NoneDataSource
-  request: js/functions/uploadImage.request.js
-  response: js/functions/uploadImage.response.js
+
+imageProcessor:
+  handler: src/functions/imageProcessor.js
+  memorySize: 1024
+  timeout: 60
+  events:
+    - s3:
+        bucket: ${self:provider.environment.IMAGE_BUCKET}
+        event: s3:ObjectCreated:*
+        rules:
+          - prefix: uploads/
+          - suffix: .jpg

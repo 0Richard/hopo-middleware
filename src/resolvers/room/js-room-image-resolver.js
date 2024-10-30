@@ -1,6 +1,4 @@
-// src/resolvers/js/room/uploadRoomImage.js
 import { util } from '@aws-appsync/utils';
-import { getSignedUrl } from '../../utils/s3';
 
 export function request(ctx) {
   const { id } = ctx.args;
@@ -23,36 +21,16 @@ export function response(ctx) {
   }
 
   // Generate unique image key
-  const imageKey = `${ctx.identity.sub}/${room.id}/${util.autoId()}.jpg`;
-  const thumbnailKey = `${ctx.identity.sub}/${room.id}/${util.autoId()}_thumb.jpg`;
+  const imageKey = `uploads/${ctx.identity.sub}/${room.id}/${util.autoId()}.jpg`;
 
-  // Get signed URLs for upload
-  const uploadUrl = getSignedUrl('putObject', {
-    Bucket: process.env.IMAGE_BUCKET,
-    Key: imageKey,
-    ContentType: 'image/jpeg',
-    ACL: 'private'
-  });
+  // Get signed URL for upload
+  const uploadUrl = util.url.encode(`https://${process.env.IMAGE_BUCKET}.s3.amazonaws.com/${imageKey}`);
 
-  // Update room with new image URLs
-  const updateResult = util.dynamodb.update({
-    operation: 'UpdateItem',
-    key: util.dynamodb.toMapValues({
-      PK: `SUB#${ctx.identity.sub}`,
-      SK: `ROOM#${room.id}`
-    }),
-    update: {
-      expression: 'SET imageUrl = :imageUrl, thumbnailUrl = :thumbnailUrl, updated = :updated',
-      expressionValues: util.dynamodb.toMapValues({
-        ':imageUrl': imageKey,
-        ':thumbnailUrl': thumbnailKey,
-        ':updated': util.time.nowISO8601()
-      })
-    }
-  });
-
+  // Return the upload URL - the actual image processing will happen 
+  // when the image is uploaded to S3 via the imageProcessor Lambda
   return {
-    ...updateResult,
-    uploadUrl
+    id: room.id,
+    uploadUrl,
+    imageKey
   };
 }

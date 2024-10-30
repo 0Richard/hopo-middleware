@@ -24,6 +24,8 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
           Resource: 
             - !GetAtt DynamodbTable.Arn
             - !Join ['', [!GetAtt DynamodbTable.Arn, '/index/*']]
@@ -32,7 +34,10 @@ provider:
             - s3:PutObject
             - s3:GetObject
             - s3:DeleteObject
-          Resource: !Join ['', [!GetAtt ImageBucket.Arn, '/*']]
+            - s3:ListBucket
+          Resource: 
+            - !GetAtt ImageBucket.Arn
+            - !Join ['', [!GetAtt ImageBucket.Arn, '/*']]
         - Effect: Allow
           Action:
             - cognito-idp:AdminInitiateAuth
@@ -50,6 +55,16 @@ custom:
     webpackConfig: webpack.config.js
     includeModules: true
     packager: 'npm'
+    excludeFiles: src/**/*.test.js
+    
+  serverless-offline:
+    httpPort: 4000
+    lambdaPort: 4002
+    websocketPort: 4001
+    noPrependStageInUrl: true
+    useChildProcesses: true
+    corsAllowOrigin: '*'
+    corsAllowHeaders: 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'
     
   appSync:
     name: ${self:service}-${self:provider.stage}
@@ -65,49 +80,50 @@ custom:
         name: DynamoDBDataSource
         config:
           tableName: !Ref DynamodbTable
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:BatchGetItem
+                - dynamodb:BatchWriteItem
+              Resource: 
+                - !GetAtt DynamodbTable.Arn
+                - !Join ['', [!GetAtt DynamodbTable.Arn, '/index/*']]
       - type: AWS_LAMBDA
         name: ImageProcessorDataSource
         config:
           functionName: imageProcessor
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource: !GetAtt ImageProcessorLambdaFunction.Arn
       - type: NONE
         name: NoneDataSource
-
+    additionalAuthentications: []
+    xrayEnabled: true
+    defaultMappingTemplates:
+      request: false
+      response: false
+    cors:
+      origin: '*'
+      headers: ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key', 'X-Amz-Security-Token', 'X-Amz-User-Agent']
+    sandbox:
+      port: 4001
+      debug: true
+      graphiql: true
 
 functions:
-  # JS Resolver Lambdas
-  getMyDwelling:
-    handler: src/resolvers/dwelling/js-dwelling-resolvers.handler
-    events:
-      - http:
-          path: dwelling/my
-          method: get
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: !Ref ApiGatewayAuthorizer
-
-  search:
-    handler: src/resolvers/js-search-resolver.handler
-    events:
-      - http:
-          path: search
-          method: get
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: !Ref ApiGatewayAuthorizer
-
-  uploadRoomImage:
-    handler: src/resolvers/room/js-room-image-resolver.handler
-    events:
-      - http:
-          path: room/image
-          method: post
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId: !Ref ApiGatewayAuthorizer
-
-  # Image Processing
   imageProcessor:
-    handler: src/functions/imageProcessor.handler
+    handler: src/utils/image-processor.js
+    name: ${self:service}-${self:provider.stage}-imageProcessor
+    memorySize: 1024
+    timeout: 60
     events:
       - s3:
           bucket: ${self:provider.environment.IMAGE_BUCKET}
@@ -117,16 +133,28 @@ functions:
             - suffix: .jpg
 
 resources:
-  - ${file(src/resources/dynamodb.yml)}
-  - ${file(src/resources/cognito.yml)}
-  - ${file(src/resources/s3.yml)}
+  - ${file(src/resources/dynamodb-config.yml)}
+  - ${file(src/resources/cognito-config.yml)}
+  - ${file(src/resources/s3-config.yml)}
+  - Outputs:
+      AppSyncApiUrl:
+        Value: !GetAtt GraphQLApi.GraphQLUrl
+      AppSyncApiId:
+        Value: !GetAtt GraphQLApi.ApiId
+      UserPoolId:
+        Value: !Ref CognitoUserPool
+      UserPoolClientId:
+        Value: !Ref CognitoUserPoolClient
+      DynamoDBTableName:
+        Value: !Ref DynamodbTable
+      DynamoDBTableArn:
+        Value: !GetAtt DynamodbTable.Arn
+      ImageBucketName:
+        Value: !Ref ImageBucket
+      Region:
+        Value: ${self:provider.region}
+      Stage:
+        Value: ${self:provider.stage}
 
-  Outputs:
-    AppSyncApiUrl:
-      Value: !GetAtt GraphQLApi.GraphQLUrl
-    AppSyncApiId:
-      Value: !GetAtt GraphQLApi.ApiId
-    UserPoolId:
-      Value: !Ref CognitoUserPool
-    UserPoolClientId:
-      Value: !Ref CognitoUserPoolClient
+
+        Error:

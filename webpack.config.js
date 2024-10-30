@@ -32,5 +32,12 @@ module.exports = {
         ]
       }
     ]
+  },
+  externals: {
+    'sharp': 'commonjs sharp'
+  },
+  node: {
+    __dirname: true
   }
 };
+
