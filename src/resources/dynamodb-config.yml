@@ -2,36 +2,17 @@ Resources:
   DynamodbTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:service}-${self:provider.stage}
-      BillingMode: PAY_PER_REQUEST
+      TableName: "DynamodbTable-${self:provider.stage}"
       AttributeDefinitions:
         - AttributeName: PK
           AttributeType: S
         - AttributeName: SK
-          AttributeType: S
-        - AttributeName: GSI1PK
-          AttributeType: S
-        - AttributeName: GSI1SK
           AttributeType: S
       KeySchema:
         - AttributeName: PK
           KeyType: HASH
         - AttributeName: SK
           KeyType: RANGE
-      GlobalSecondaryIndexes:
-        - IndexName: GSI1
-          KeySchema:
-            - AttributeName: GSI1PK
-              KeyType: HASH
-            - AttributeName: GSI1SK
-              KeyType: RANGE
-          Projection:
-            ProjectionType: ALL
-      StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
-      TimeToLiveSpecification:
-        AttributeName: TTL
-        Enabled: true
-      Tags:
-        - Key: Environment
-          Value: ${self:provider.stage}
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5

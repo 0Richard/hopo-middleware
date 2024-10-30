@@ -5,33 +5,12 @@ Resources:
       BucketName: ${self:provider.environment.IMAGE_BUCKET}
       CorsConfiguration:
         CorsRules:
-          - AllowedHeaders:
+          - AllowedOrigins:
+              - '*'
+            AllowedHeaders:
               - '*'
             AllowedMethods:
+              - GET
               - PUT
               - POST
-              - GET
-            AllowedOrigins:
-              - '*'
-            MaxAge: 3000
-      LifecycleConfiguration:
-        Rules:
-          - Id: DeleteOldImages
-            Status: Enabled
-            ExpirationInDays: 30
-            Prefix: temp/
-
-  ImageBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref ImageBucket
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !GetAtt AppSyncServiceRole.Arn
-            Action:
-              - s3:PutObject
-              - s3:GetObject
-            Resource: !Join ['', [!GetAtt ImageBucket.Arn, '/*']]
+              - DELETE
