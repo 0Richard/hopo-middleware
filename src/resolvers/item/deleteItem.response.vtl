@@ -1,1 +1,7 @@
-See deleteDwelling.response.vtl for PATTERN
+## Response template for deleteItem
+#if($ctx.error)
+  $utils.error($ctx.error.message, $ctx.error.type)
+#else
+  $utils.toJson($ctx.result)
+#end
+

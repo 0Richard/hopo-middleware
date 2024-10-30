@@ -1,0 +1,11 @@
+{
+  "version": "2018-05-29",
+  "operation": "Scan",
+  "filter": {
+    "expression": "attribute_exists(PK) AND begins_with(SK, :dwellingPrefix) AND isDeleted = :notDeleted",
+    "expressionValues": {
+      ":dwellingPrefix": { "S": "DWELLING#" },
+      ":notDeleted": { "BOOL": false }
+    }
+  }
+}

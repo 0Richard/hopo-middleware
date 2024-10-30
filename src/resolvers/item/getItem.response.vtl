@@ -1,7 +1,7 @@
-#if(!$ctx.result)
-  $util.error("Item not found", "NotFound")
+## Response template for getItem
+#if($ctx.error)
+  $utils.error($ctx.error.message, $ctx.error.type)
+#else
+  $utils.toJson($ctx.result)
 #end
-#if($ctx.result.sub_id != $context.identity.sub)
-  $util.unauthorized()
-#end
-$util.toJson($ctx.result)
+

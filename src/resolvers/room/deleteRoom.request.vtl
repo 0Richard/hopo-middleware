@@ -1,1 +1,15 @@
-## See deleteDwelling.request.vtl for PATTERN
+{
+  "version": "2018-05-29",
+  "operation": "UpdateItem",
+  "key": {
+    "PK": { "S": "SUB#$context.identity.sub" },
+    "SK": { "S": "ROOM#$ctx.args.id" }
+  },
+  "update": {
+    "expression": "SET isDeleted = :deleted, updated = :updated",
+    "expressionValues": {
+      ":deleted": { "BOOL": true },
+      ":updated": { "S": "$util.time.nowISO8601()" }
+    }
+  }
+}

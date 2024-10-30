@@ -2,29 +2,11 @@
   "version": "2018-05-29",
   "operation": "Query",
   "query": {
-    "expression": "PK = :pk",
+    "expression": "PK = :pk AND begins_with(SK, :dwellingPrefix) AND isDeleted = :notDeleted",
     "expressionValues": {
-      ":pk": { "S": "SUB#$context.identity.sub" }
-    }
-  },
-  "filter": {
-    "expression": "begins_with(SK, :sk)",
-    "expressionValues": {
-      ":sk": { "S": "DWELLING#" }
+      ":pk": { "S": "SUB#$context.identity.sub" },
+      ":dwellingPrefix": { "S": "DWELLING#" },
+      ":notDeleted": { "BOOL": false }
     }
   }
-  #if($ctx.args.filter)
-    #if($ctx.args.filter.type)
-      ,"expression": "#type = :type",
-      "expressionNames": {
-        "#type": "dwellingType"
-      },
-      "expressionValues": {
-        ":type": { "S": "$ctx.args.filter.type" }
-      }
-    #end
-  #end
-  #if($ctx.args.sort)
-    ,"scanIndexForward": #if($ctx.args.sort.direction == "DESC") false #else true #end
-  #end
 }

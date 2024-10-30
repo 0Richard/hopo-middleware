@@ -1,0 +1,21 @@
+{
+  "version": "2018-05-29",
+  "operation": "UpdateItem",
+  "key": {
+    "PK": { "S": "SUB#$context.identity.sub" },
+    "SK": { "S": "ROOM#$ctx.args.id" }
+  },
+  "update": {
+    "expression": "SET #name = :name, #roomType = :roomType, #updated = :updated",
+    "expressionNames": {
+      "#name": "name",
+      "#roomType": "roomType",
+      "#updated": "updated"
+    },
+    "expressionValues": {
+      ":name": { "S": "$ctx.args.input.name" },
+      ":roomType": { "S": "$ctx.args.input.roomType" },
+      ":updated": { "S": "$util.time.nowISO8601()" }
+    }
+  }
+}

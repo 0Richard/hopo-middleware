@@ -1,1 +1,7 @@
-$util.toJson($ctx.result.items)
+## Response template for listItems
+#if($ctx.error)
+  $utils.error($ctx.error.message, $ctx.error.type)
+#else
+  $utils.toJson($ctx.result.items)
+#end
+

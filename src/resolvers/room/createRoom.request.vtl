@@ -1,19 +1,17 @@
-#set($id = $util.autoId())
 {
   "version": "2018-05-29",
   "operation": "PutItem",
   "key": {
     "PK": { "S": "SUB#$context.identity.sub" },
-    "SK": { "S": "ROOM#$id" }
+    "SK": { "S": "ROOM#$util.autoId()" }
   },
   "attributeValues": {
-    "id": { "S": "$id" },
     "sub_id": { "S": "$context.identity.sub" },
     "dwelling_id": { "S": "$ctx.args.input.dwelling_id" },
-    "type": { "S": "room" },
     "name": { "S": "$ctx.args.input.name" },
     "roomType": { "S": "$ctx.args.input.roomType" },
     "created": { "S": "$util.time.nowISO8601()" },
-    "updated": { "S": "$util.time.nowISO8601()" }
+    "updated": { "S": "$util.time.nowISO8601()" },
+    "isDeleted": { "BOOL": false }
   }
 }

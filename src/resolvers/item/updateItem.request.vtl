@@ -1,0 +1,29 @@
+{
+  "version": "2018-05-29",
+  "operation": "UpdateItem",
+  "key": {
+    "PK": { "S": "SUB#$context.identity.sub" },
+    "SK": { "S": "ITEM#$ctx.args.id" }
+  },
+  "update": {
+    "expression": "SET #name = :name, #description = :description, #details = :details, #price = :price, #quantity = :quantity, #retailer = :retailer, #updated = :updated",
+    "expressionNames": {
+      "#name": "name",
+      "#description": "description",
+      "#details": "details",
+      "#price": "price",
+      "#quantity": "quantity",
+      "#retailer": "retailer",
+      "#updated": "updated"
+    },
+    "expressionValues": {
+      ":name": { "S": "$ctx.args.input.name" },
+      ":description": { "S": "$ctx.args.input.description" },
+      ":details": $util.dynamodb.toDynamoDBJson($ctx.args.input.details),
+      ":price": $util.dynamodb.toDynamoDBJson($ctx.args.input.price),
+      ":quantity": { "N": "$ctx.args.input.quantity" },
+      ":retailer": { "S": "$ctx.args.input.retailer" },
+      ":updated": { "S": "$util.time.nowISO8601()" }
+    }
+  }
+}

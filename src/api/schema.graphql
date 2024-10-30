@@ -1,4 +1,4 @@
-type Dwelling @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
+type Dwelling {
   id: ID!
   sub_id: ID!
   name: String!
@@ -6,13 +6,14 @@ type Dwelling @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
   dwellingType: String!
   created: AWSDateTime!
   updated: AWSDateTime
-  rooms: [Room!] @hasMany(indexName: "byDwelling", fields: ["id"])
-  totalRooms: Int!
-  totalItems: Int!
-  totalValue: Float!
+  isDeleted: Boolean!          # New field for soft delete
+  rooms: [Room]
+  totalRooms: Int
+  totalItems: Int
+  totalValue: Float
 }
 
-type Room @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
+type Room {
   id: ID!
   dwelling_id: ID!
   sub_id: ID!
@@ -22,12 +23,13 @@ type Room @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
   thumbnailUrl: String
   created: AWSDateTime!
   updated: AWSDateTime
-  items: [Item!] @hasMany(indexName: "byRoom", fields: ["id"])
-  itemCount: Int!
-  totalValue: Float!
+  isDeleted: Boolean!          # New field for soft delete
+  items: [Item]
+  itemCount: Int
+  totalValue: Float
 }
 
-type Item @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
+type Item {
   id: ID!
   room_id: ID!
   sub_id: ID!
@@ -39,6 +41,7 @@ type Item @model @auth(rules: [{ allow: owner, ownerField: "sub_id" }]) {
   retailer: String
   created: AWSDateTime!
   updated: AWSDateTime
+  isDeleted: Boolean!          # New field for soft delete
 }
 
 type Address {
@@ -59,12 +62,33 @@ type Price {
   currency: String!
 }
 
-type SearchResult {
-  dwellings: [Dwelling!]
-  rooms: [Room!]
-  items: [Item!]
+# Queries
+type Query {
+  getDwelling(id: ID!): Dwelling
+  listDwellings: [Dwelling!]!
+  getRoom(id: ID!): Room
+  listRooms(dwelling_id: ID!): [Room!]!
+  getItem(id: ID!): Item
+  listItems(room_id: ID!): [Item!]!
+  adminListDwellings: [Dwelling!] # Only accessible by Admins
 }
 
+# Mutations
+type Mutation {
+  createDwelling(input: CreateDwellingInput!): Dwelling!
+  updateDwelling(id: ID!, input: UpdateDwellingInput!): Dwelling!
+  deleteDwelling(id: ID!): Boolean!
+
+  createRoom(input: CreateRoomInput!): Room!
+  updateRoom(id: ID!, input: UpdateRoomInput!): Room!
+  deleteRoom(id: ID!): Boolean!
+
+  createItem(input: CreateItemInput!): Item!
+  updateItem(id: ID!, input: UpdateItemInput!): Item!
+  deleteItem(id: ID!): Boolean!
+}
+
+# Input Types
 input CreateDwellingInput {
   name: String!
   address: AddressInput!
@@ -123,75 +147,4 @@ input ItemDetailsInput {
 input PriceInput {
   amount: Float!
   currency: String!
-}
-
-input DwellingFilter {
-  type: String
-  search: String
-}
-
-input RoomFilter {
-  type: String
-  search: String
-}
-
-input ItemFilter {
-  priceRange: PriceRange
-  search: String
-}
-
-input PriceRange {
-  min: Float
-  max: Float
-}
-
-input SortInput {
-  field: String!
-  direction: SortDirection!
-}
-
-enum SortDirection {
-  ASC
-  DESC
-}
-
-type Query {
-  # Dwelling Queries
-  getDwelling(id: ID!): Dwelling @aws_auth
-  listDwellings(filter: DwellingFilter, sort: SortInput): [Dwelling!]! @aws_auth
-  getMyDwelling: Dwelling @aws_auth
-  
-  # Room Queries
-  getRoom(id: ID!): Room @aws_auth
-  listRooms(dwelling_id: ID!, filter: RoomFilter, sort: SortInput): [Room!]! @aws_auth
-  
-  # Item Queries
-  getItem(id: ID!): Item @aws_auth
-  listItems(room_id: ID!, filter: ItemFilter, sort: SortInput): [Item!]! @aws_auth
-  
-  # Search
-  search(term: String!, entityType: String): SearchResult! @aws_auth
-}
-
-type Mutation {
-  # Dwelling Mutations
-  createDwelling(input: CreateDwellingInput!): Dwelling! @aws_auth
-  updateDwelling(id: ID!, input: UpdateDwellingInput!): Dwelling! @aws_auth
-  deleteDwelling(id: ID!): Boolean! @aws_auth
-  
-  # Room Mutations
-  createRoom(input: CreateRoomInput!): Room! @aws_auth
-  updateRoom(id: ID!, input: UpdateRoomInput!): Room! @aws_auth
-  deleteRoom(id: ID!): Boolean! @aws_auth
-  uploadRoomImage(id: ID!, file: Upload!): Room! @aws_auth
-  
-  # Item Mutations
-  createItem(input: CreateItemInput!): Item! @aws_auth
-  updateItem(id: ID!, input: UpdateItemInput!): Item! @aws_auth
-  deleteItem(id: ID!): Boolean! @aws_auth
-}
-
-schema {
-  query: Query
-  mutation: Mutation
 }

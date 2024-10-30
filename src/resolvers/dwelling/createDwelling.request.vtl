@@ -1,22 +1,16 @@
-#set($id = $util.autoId())
 {
   "version": "2018-05-29",
   "operation": "PutItem",
   "key": {
     "PK": { "S": "SUB#$context.identity.sub" },
-    "SK": { "S": "DWELLING#$id" }
+    "SK": { "S": "DWELLING#$util.autoId()" }
   },
   "attributeValues": {
-    "id": { "S": "$id" },
     "sub_id": { "S": "$context.identity.sub" },
-    "type": { "S": "dwelling" },
     "name": { "S": "$ctx.args.input.name" },
     "dwellingType": { "S": "$ctx.args.input.dwellingType" },
     "address": $util.dynamodb.toDynamoDBJson($ctx.args.input.address),
     "created": { "S": "$util.time.nowISO8601()" },
-    "updated": { "S": "$util.time.nowISO8601()" }
-  },
-  "condition": {
-    "expression": "attribute_not_exists(PK) AND attribute_not_exists(SK)"
+    "isDeleted": { "BOOL": false }
   }
 }
