@@ -63,7 +63,7 @@ custom:
     userPoolConfig:
       userPoolId: !Ref CognitoUserPool
       defaultAction: ALLOW
-    schema: ./src/api/schema.graphql                      # Path to your schema file
+    schema: src/api/schema.graphql                      # Path to your schema file
     mappingTemplatesLocation: src/resolvers             # Base path for VTL files
     mappingTemplates: ${file(src/resources/mapping-templates.yml)}
     dataSources:
@@ -103,7 +103,7 @@ custom:
 
 resources:
   - ${file(src/resources/dynamodb-config.yml)}
-  - ${file(src/resources/cognito-config.yml)}
+  #- ${file(src/resources/cognito-config.yml)} ## Needed only as one-time setup, include only once cognito_build.sh
   - ${file(src/resources/s3-config.yml)}
 
 functions:

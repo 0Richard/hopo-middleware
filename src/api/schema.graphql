@@ -70,7 +70,7 @@ type Query {
   listRooms(dwelling_id: ID!): [Room!]!
   getItem(id: ID!): Item
   listItems(room_id: ID!): [Item!]!
-  adminListDwellings: [Dwelling!] # Only accessible by Admins
+  adminListDwellings: [Dwelling!]! # Only accessible by Admins
 }
 
 # Mutations
