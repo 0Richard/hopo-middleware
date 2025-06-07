@@ -13,6 +13,8 @@ provider:
     THUMBNAIL_WIDTH: ${env:THUMBNAIL_WIDTH, 150}
     THUMBNAIL_HEIGHT: ${env:THUMBNAIL_HEIGHT, 150}
     THUMBNAIL_QUALITY: ${env:THUMBNAIL_QUALITY, 80}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
   iam:
     role:
       statements:
@@ -42,7 +44,7 @@ provider:
           Action:
             - cognito-idp:AdminInitiateAuth
             - cognito-idp:AdminRespondToAuthChallenge
-          Resource: !GetAtt CognitoUserPool.Arn
+          Resource: arn:aws:cognito-idp:${self:provider.region}:${aws:accountId}:userpool/${env:COGNITO_USER_POOL_ID}
 
 plugins:
   - serverless-appsync-plugin
@@ -61,7 +63,7 @@ custom:
     name: ${self:service}-${self:provider.stage}
     authenticationType: AMAZON_COGNITO_USER_POOLS
     userPoolConfig:
-      userPoolId: !Ref CognitoUserPool
+      userPoolId: ${env:COGNITO_USER_POOL_ID}
       defaultAction: ALLOW
     schema: src/api/schema.graphql                      # Path to your schema file
     mappingTemplatesLocation: src/resolvers             # Base path for VTL files
@@ -103,7 +105,8 @@ custom:
 
 resources:
   - ${file(src/resources/dynamodb-config.yml)}
-  #- ${file(src/resources/cognito-config.yml)} ## Needed only as one-time setup, include only once cognito_build.sh
+  # Uncomment the following line if you want this stack to create the Cognito resources
+  # - ${file(src/resources/cognito-config.yml)}
   - ${file(src/resources/s3-config.yml)}
 
 functions:
