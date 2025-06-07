@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import sharp from 'sharp';
+import logger from './logger';
 
 const s3 = new AWS.S3();
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
@@ -66,7 +67,7 @@ export const handler = async (event) => {
       body: JSON.stringify({ message: 'Images processed successfully' })
     };
   } catch (error) {
-    console.error('Error processing image:', error);
+    logger.error('Error processing image:', error);
     throw error;
   }
 };
