@@ -1,111 +1,101 @@
-# VTL Resolvers for Dwelling CRUD Operations
 - type: Query
   field: getDwelling
   dataSource: DynamoDBDataSource
-  request: dwelling/getDwelling.request.vtl
-  response: dwelling/getDwelling.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Query
   field: listDwellings
   dataSource: DynamoDBDataSource
-  request: dwelling/listDwellings.request.vtl
-  response: dwelling/listDwellings.response.vtl
+  request: resolvers.js
+  response: resolvers.js
+
+- type: Query
+  field: adminListDwellings
+  dataSource: DynamoDBDataSource
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: createDwelling
   dataSource: DynamoDBDataSource
-  request: dwelling/createDwelling.request.vtl
-  response: dwelling/createDwelling.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: updateDwelling
   dataSource: DynamoDBDataSource
-  request: dwelling/updateDwelling.request.vtl
-  response: dwelling/updateDwelling.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: deleteDwelling
   dataSource: DynamoDBDataSource
-  request: dwelling/deleteDwelling.request.vtl
-  response: dwelling/deleteDwelling.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
-# VTL Resolvers for Room CRUD Operations
 - type: Query
   field: getRoom
   dataSource: DynamoDBDataSource
-  request: room/getRoom.request.vtl
-  response: room/getRoom.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Query
   field: listRooms
   dataSource: DynamoDBDataSource
-  request: room/listRooms.request.vtl
-  response: room/listRooms.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: createRoom
   dataSource: DynamoDBDataSource
-  request: room/createRoom.request.vtl
-  response: room/createRoom.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: updateRoom
   dataSource: DynamoDBDataSource
-  request: room/updateRoom.request.vtl
-  response: room/updateRoom.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: deleteRoom
   dataSource: DynamoDBDataSource
-  request: room/deleteRoom.request.vtl
-  response: room/deleteRoom.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
-# VTL Resolvers for Item CRUD Operations
 - type: Query
   field: getItem
   dataSource: DynamoDBDataSource
-  request: item/getItem.request.vtl
-  response: item/getItem.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Query
   field: listItems
   dataSource: DynamoDBDataSource
-  request: item/listItems.request.vtl
-  response: item/listItems.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: createItem
   dataSource: DynamoDBDataSource
-  request: item/createItem.request.vtl
-  response: item/createItem.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: updateItem
   dataSource: DynamoDBDataSource
-  request: item/updateItem.request.vtl
-  response: item/updateItem.response.vtl
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Mutation
   field: deleteItem
   dataSource: DynamoDBDataSource
-  request: item/deleteItem.request.vtl
-  response: item/deleteItem.response.vtl
-
-# JavaScript Resolvers
-- type: Query
-  field: getMyDwelling
-  dataSource: DynamoDBDataSource
-  request: dwelling/js-dwelling-resolvers.js
-  response: dwelling/js-dwelling-resolvers.js
+  request: resolvers.js
+  response: resolvers.js
 
 - type: Query
   field: search
   dataSource: DynamoDBDataSource
   request: js-search-resolver.js
   response: js-search-resolver.js
-
-- type: Mutation
-  field: uploadRoomImage
-  dataSource: NoneDataSource
-  request: room/js-room-image-resolver.js
-  response: room/js-room-image-resolver.js
