@@ -228,3 +228,12 @@ Destroy the AWS resources on the specified stage:
 ```bash
 bash destroy.sh
 ```
+## Postman Collection
+
+The repository includes `hopo.postman_collection.json` with sample GraphQL requests.
+To use it in Postman:
+
+1. Open Postman and choose **Import**.
+2. Select the `hopo.postman_collection.json` file from this project root.
+3. Set the environment variable `GRAPHQL_URL` to your deployed AppSync endpoint.
+4. Execute any request to test the API.
