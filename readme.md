@@ -192,13 +192,17 @@ Set environment variables:
 A `.env.example` file is included. Copy it and update values before deployment.
 ```bash
 cp .env.example .env
+DRY_RUN=false bash src/cognito_build.sh
 ```
 
-Run the Cognito setup script to create the user pool and client. The script will
-append the generated IDs to your `.env` file.
-```bash
-bash src/cognito_build.sh
-```
+The build script creates the Cognito user pool and app client, appending
+`COGNITO_USER_POOL_ID` and `COGNITO_CLIENT_ID` to your `.env` file. The
+`serverless-dotenv-plugin` loads these values during deployment.
+
+If you prefer the stack to create the Cognito pool, uncomment
+`src/resources/cognito-config.yml` in `serverless.yaml` and change
+`userPoolId` to `!Ref CognitoUserPool`.
+
 
 Deploy to AWS on the specified stage:
 
