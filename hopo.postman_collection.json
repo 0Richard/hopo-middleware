@@ -1,0 +1,327 @@
+{
+  "info": {
+    "_postman_id": "3f5f4a5d-a000-4dbe-9465-123456789abc",
+    "name": "Hopo GraphQL API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "getDwelling",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query getDwelling($id: ID!) { getDwelling(id: $id) { id name } }",
+            "variables": "{\n  \"id\": \"\"\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "listDwellings",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query listDwellings { listDwellings { id name } }"
+          }
+        }
+      }
+    },
+    {
+      "name": "getRoom",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query getRoom($id: ID!) { getRoom(id: $id) { id name } }",
+            "variables": "{\n  \"id\": \"\"\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "listRooms",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query listRooms($dwelling_id: ID!) { listRooms(dwelling_id: $dwelling_id) { id name } }",
+            "variables": "{\n  \"dwelling_id\": \"\"\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "getItem",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query getItem($id: ID!) { getItem(id: $id) { id name } }",
+            "variables": "{\n  \"id\": \"\"\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "listItems",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query listItems($room_id: ID!) { listItems(room_id: $room_id) { id name } }",
+            "variables": "{\n  \"room_id\": \"\"\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "adminListDwellings",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query adminListDwellings { adminListDwellings { id name } }"
+          }
+        }
+      }
+    },
+    {
+      "name": "createDwelling",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation createDwelling($input: CreateDwellingInput!) { createDwelling(input: $input) { id name } }",
+            "variables": "{\n  \"input\": {}\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "updateDwelling",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation updateDwelling($id: ID!, $input: UpdateDwellingInput!) { updateDwelling(id: $id, input: $input) { id name } }",
+            "variables": "{\n  \"id\": \"\",\n  \"input\": {}\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "deleteDwelling",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation deleteDwelling($id: ID!) { deleteDwelling(id: $id) }",
+            "variables": "{\n  \"id\": \"\"\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "createRoom",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation createRoom($input: CreateRoomInput!) { createRoom(input: $input) { id name } }",
+            "variables": "{\n  \"input\": {}\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "updateRoom",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation updateRoom($id: ID!, $input: UpdateRoomInput!) { updateRoom(id: $id, input: $input) { id name } }",
+            "variables": "{\n  \"id\": \"\",\n  \"input\": {}\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "deleteRoom",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation deleteRoom($id: ID!) { deleteRoom(id: $id) }",
+            "variables": "{\n  \"id\": \"\"\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "createItem",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation createItem($input: CreateItemInput!) { createItem(input: $input) { id name } }",
+            "variables": "{\n  \"input\": {}\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "updateItem",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation updateItem($id: ID!, $input: UpdateItemInput!) { updateItem(id: $id, input: $input) { id name } }",
+            "variables": "{\n  \"id\": \"\",\n  \"input\": {}\n}"
+          }
+        }
+      }
+    },
+    {
+      "name": "deleteItem",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{GRAPHQL_URL}}",
+          "host": ["{{GRAPHQL_URL}}"]
+        },
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "mutation deleteItem($id: ID!) { deleteItem(id: $id) }",
+            "variables": "{\n  \"id\": \"\"\n}"
+          }
+        }
+      }
+    }
+  ]
+}

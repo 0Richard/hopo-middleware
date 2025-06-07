@@ -1,26 +1,5 @@
 # Welcome to hopo-middleware Read Me
 
-
-
-
-##### NPM Installs for the above packages
-```javascript
-npm install axios
-npm install axios-retry
-npm install dotenv
-npm install @aws-sdk/util-dynamodb
-npm install uuid
-npm install @aws-sdk/client-dynamodb
-npm install --save-dev jsdoc
-```
-##### Or as a single command
-```javascript
-npm install axios axios-retry dotenv @aws-sdk/util-dynamodb uuid @aws-sdk/client-dynamodb --save-dev jsdoc
-```
-
-
-
-
 #### SDLC:
 
 ###### Data Structure:
@@ -210,8 +189,8 @@ npm install
 
 Set environment variables:
 
-Create and edit `.env`
-```console
+A `.env.example` file is included. Copy it and update values before deployment.
+```bash
 cp .env.example .env
 DRY_RUN=false bash src/cognito_build.sh
 ```
@@ -223,6 +202,7 @@ The build script creates the Cognito user pool and app client, appending
 If you prefer the stack to create the Cognito pool, uncomment
 `src/resources/cognito-config.yml` in `serverless.yaml` and change
 `userPoolId` to `!Ref CognitoUserPool`.
+
 
 Deploy to AWS on the specified stage:
 
@@ -237,3 +217,19 @@ Destroy the AWS resources on the specified stage:
 ```bash
 bash destroy.sh
 ```
+
+## Postman Collection
+
+The repository includes `hopo.postman_collection.json` with sample GraphQL requests.
+To use it in Postman:
+
+1. Open Postman and choose **Import**.
+2. Select the `hopo.postman_collection.json` file from this project root.
+3. Set the environment variable `GRAPHQL_URL` to your deployed AppSync endpoint.
+4. Execute any request to test the API.
+
+## Logging
+
+Application logs are handled using the Winston logger. Import the configured
+logger from `src/utils/logger.js` in your functions to record structured log
+messages.
