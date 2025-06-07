@@ -2,7 +2,7 @@ Resources:
   DynamodbTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: "DynamodbTable-${self:provider.stage}"
+      TableName: "${self:service}-${self:provider.stage}"
       AttributeDefinitions:
         - AttributeName: PK
           AttributeType: S
