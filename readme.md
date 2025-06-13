@@ -207,7 +207,7 @@ If you prefer the stack to create the Cognito pool, uncomment
 Deploy to AWS on the specified stage:
 
 ```bash
-bash deploy.sh
+bash x_deploy.sh-needs-revising
 ```
 
 ## Destroy
@@ -215,7 +215,7 @@ bash deploy.sh
 Destroy the AWS resources on the specified stage:
 
 ```bash
-bash destroy.sh
+bash x_destroy.sh-needs-revising
 ```
 
 ## Postman Collection
