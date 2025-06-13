@@ -2,11 +2,14 @@
   "version": "2018-05-29",
   "operation": "Query",
   "query": {
-    "expression": "PK = :pk AND begins_with(SK, :itemPrefix) AND isDeleted = :notDeleted",
+    "expression": "PK = :pk AND begins_with(SK, :itemPrefix)",
     "expressionValues": {
       ":pk": { "S": "SUB#$context.identity.sub" },
       ":itemPrefix": { "S": "ITEM#" },
       ":notDeleted": { "BOOL": false }
+    },
+    "filter": {
+      "expression": "isDeleted = :notDeleted"
     }
   }
 }
